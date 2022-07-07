@@ -6,15 +6,45 @@ plugins {
 
 group = 'com.lunar'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+sourceCompatibility = '15'
 
 repositories {
 	mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2'
+
+	// log
+	implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
+
+	// lombok
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	// QueryDSL
+	implementation ("com.querydsl:querydsl-jpa")
+	implementation ("com.querydsl:querydsl-apt")
+	implementation ("com.querydsl:querydsl-core")
+
+	// jdbc
+	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+
+	// jwt
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+	implementation 'com.auth0:java-jwt:3.19.1'
+
+	// test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
 }
 
 tasks.named('test') {
