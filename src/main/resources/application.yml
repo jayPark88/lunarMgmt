@@ -3,46 +3,48 @@ spring:
     active:
       - local
 server:
-  servlet:
-    context-path: /mgmt
-
----
-server:
   port: 8080
+  servlet:
+    context-path: /lunar
+
+###################################################################################################
+##  LOCAL
+###################################################################################################
+---
 spring:
   profiles: local
   datasource:
-    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-    url: jdbc:log4jdbc:mariadb://localhost:3306/lunar_db?serverTimezone=UTC&characterEncoding=UTF-8&passwordCharacterEncoding=UTF-8
-    username : lunar
-    password : lois@1234
-
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url:  jdbc:mysql://localhost:3306/lunar_db?serverTimezone=UTC&characterEncoding=UTF-8&passwordCharacterEncoding=UTF-8
+    username: root
+    password: lois@1234
   jwt:
-    secret: oneplatTokenSecretKeyakfldhxkdnj
-
+    secret: lunarTokenSecretKeyakfldhxkdnj
   jpa:
-    hibernate:
-      #create: 테이블 삭제, 생성 / create-drop: 종료 시점에 테이블 삭제 / update: 변경부분만 반영 / validate: 정상 매핑 검증 / none: 초기화 안함
-      ddl-auto: none
-      naming:
-        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MariaDBDialect
         show_sql: true
         format_sql: true
         use_sql_comments: true
-## logging
-logging:
-  file:
-    path: /Users/its/oneplat
-  level:
-    root: info
-    kr.co.wiseai.admin: debug
-    org.springframework.web: trace
-    sql: error
-    jdbc: off
-    jdbc.sqlonly: info
-    jdbc.connection: off
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    hibernate:
+      #create: 테이블 삭제, 생성 / create-drop: 종료 시점에 테이블 삭제 / update: 변경부분만 반영 / validate: 정상 매핑 검증 / none: 초기화 안함
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+  ## logging
+  logging:
+    file:
+      path: C:\svc\wiseai-admin-logs
+    level:
+      root: info
+      kr.co.wiseai.admin: debug
+      org.springframework.web: trace
+      sql: error
+      jdbc: off
+      jdbc.sqlonly: info
+      jdbc.connection: off
+      org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
 ---

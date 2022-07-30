@@ -2,6 +2,14 @@ plugins {
 	id 'org.springframework.boot' version '2.6.6'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+  id 'war'
+}
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+def mapstructSrcDir = 'build/generated/sources/annotationProcessor/java/main'
+sourceSets {
+  main.java.srcDirs += [ mapstructSrcDir ]
 }
 
 group = 'com.lunar'
@@ -13,39 +21,47 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2'
+  implementation 'org.springframework.boot:spring-boot-starter-web'
+  implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+  implementation 'org.springframework.boot:spring-boot-starter-security'
+  implementation 'org.springframework.boot:spring-boot-starter-validation'
+  implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-	// log
-	implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
-	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
+  // lombok
+  compileOnly 'org.projectlombok:lombok'
+  annotationProcessor 'org.projectlombok:lombok'
 
-	// lombok
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
+  // jwt
+  implementation 'io.jsonwebtoken:jjwt-api:0.11.1'
+  runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.1'
+  runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.1'
+  implementation 'com.auth0:java-jwt:3.1.0'
 
-	// QueryDSL
-	implementation ("com.querydsl:querydsl-jpa")
-	implementation ("com.querydsl:querydsl-apt")
-	implementation ("com.querydsl:querydsl-core")
+  implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.0'
+  implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4:1.16'
+  runtimeOnly 'mysql:mysql-connector-java:8.0.25'
 
-	// jdbc
-	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
-
-	// jwt
-	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
-	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
-	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.2'
-	implementation 'com.auth0:java-jwt:3.19.1'
-
-	// test
+  // test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
 }
+
+bootWar{
+  archiveBaseName="wiseai-admin"
+  archiveVersion="0.0.1-SNAPSHOT"
+}
+
+jar{
+  enabled = false
+}
+
+bootJar{
+  enabled = true
+  archiveBaseName="wiseai-admin"
+  archiveVersion="0.0.1-SNAPSHOT"
+}
+
+description = 'wiseai-admin'
 
 tasks.named('test') {
 	useJUnitPlatform()
