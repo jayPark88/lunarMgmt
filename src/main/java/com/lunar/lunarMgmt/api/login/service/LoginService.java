@@ -1,8 +1,10 @@
 package com.lunar.lunarMgmt.api.login.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.api.login.model.Tokens;
+import com.lunar.lunarMgmt.common.exception.ExpiredTokenException;
 import com.lunar.lunarMgmt.common.exception.NotFoundUserException;
 import com.lunar.lunarMgmt.common.jpa.entities.AdminUserEntity;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminUserRepository;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -48,4 +51,18 @@ public class LoginService {
 
     return new Tokens(accessToken, refreshToken);
   }
+
+  public Tokens refreshToken(String refreshToken) throws ExpiredTokenException, JsonMappingException, JsonProcessingException {
+    String newRefreshToken = null;
+
+    if (Optional.ofNullable(refreshToken).isPresent()) {
+      AdminUserDto adminUserDto = jwtUtil.getUserDtoInToken(refreshToken);
+      newRefreshToken = jwtUtil.generateRefreshToken(adminUserDto);
+    }else{
+      throw new ExpiredTokenException();
+    }
+    // 기존에 refreshToken을 accessToken으로, newRefreshToken을 refreshToken으로 변경
+    return new Tokens(refreshToken, newRefreshToken);
+  }
+
 }
