@@ -6,7 +6,6 @@ import com.lunar.lunarMgmt.api.login.model.Tokens;
 import com.lunar.lunarMgmt.api.login.service.LoginService;
 import com.lunar.lunarMgmt.common.exception.NotFoundUserException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

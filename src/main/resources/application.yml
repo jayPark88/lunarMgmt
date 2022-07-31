@@ -19,7 +19,7 @@ spring:
     username: root
     password: lois@1234
   jwt:
-    secret: lunarTokenSecretKeyakfldhxkdnj
+    secret: lunarTokenSecretKeyakfldhxkdnjpowersecret
   jpa:
     properties:
       hibernate:

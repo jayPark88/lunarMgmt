@@ -39,7 +39,7 @@ public class AdminUserEntity extends AdminBaseEntity{
   @Column(name = "ADMIN_USER_PWD" , columnDefinition = "varchar(50) comment 'HQ-ADMIN 사용자 패스워드'")
   private String adminUserPwd;
 
-  @Column(name = "DEPT", columnDefinition = "varchar(50) comment 'HQ-ADMIN 사용자 부서'")
+  @Column(name = "DEPT", columnDefinition = "varchar(200) comment 'HQ-ADMIN 사용자 부서'")
   private String dept;
 
   @Column(name = "POSITION", columnDefinition = "varchar(50) comment 'HQ-ADMIN 사용자 직급'")
