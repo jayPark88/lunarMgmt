@@ -28,7 +28,7 @@ spring:
         format_sql: true
         use_sql_comments: true
     hibernate:
-      #create: 테이블 삭제, 생성 / create-drop: 종료 시점에 테이블 삭제 / update: 변경부분만 반영 / validate: 정상 매핑 검증 / none: 초기화 안함
+      #create: 테이블 삭제, 생성 / create-drop: 종료 시점에 테이블 삭제 / update: 변경부분만 반영 / validate: 정상 매핑 검증 / none: 초기화 안함.
       ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
