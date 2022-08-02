@@ -22,7 +22,6 @@ public class AdminUserDto extends AdminBaseDto implements ChangableToFromEntity<
   private String dept;
   private String position;
   private Long authSeq;
-
   private Character deleteYn;
   private Character useYn;
 
@@ -55,6 +54,7 @@ public class AdminUserDto extends AdminBaseDto implements ChangableToFromEntity<
     position = entity.getPosition();
     deleteYn = entity.getDeleteYn();
     useYn = entity.getUseYn();
+    authSeq = entity.getAuth().getAuthSeq();
   }
 
   public AdminUserDto withoutPasswd() {
