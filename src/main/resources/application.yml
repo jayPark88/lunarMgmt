@@ -15,11 +15,17 @@ spring:
   profiles: local
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url:  jdbc:mysql://localhost:3306/lunar_db?serverTimezone=UTC&characterEncoding=UTF-8&passwordCharacterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/lunar_db?serverTimezone=UTC&characterEncoding=UTF-8&passwordCharacterEncoding=UTF-8
     username: root
     password: lois@1234
-  jwt:
-    secret: lunarTokenSecretKeyakfldhxkdnjpowersecret
+    hikari:
+      maximum-pool-size: 100
+      minimumIdle: 25
+      idleTimeout: 10000
+      poolName: SpringBootJPAHikariCP
+      maxLifetime: 420000
+      connection-timeout: 10000
+
   jpa:
     properties:
       hibernate:
@@ -28,10 +34,12 @@ spring:
         format_sql: true
         use_sql_comments: true
     hibernate:
-      #create: 테이블 삭제, 생성 / create-drop: 종료 시점에 테이블 삭제 / update: 변경부분만 반영 / validate: 정상 매핑 검증 / none: 초기화 안함.
+      #create: 테이블 삭제, 생성 / create-drop: 종료 시점에 테이블 삭제 / update: 변경부분만 반영 / validate: 정상 매핑 검증 / none: 초기화 안함
       ddl-auto: none
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  jwt:
+    secret: lunarTokenSecretKeyakfldhxkdnjpowersecret
 
   ## logging
   logging:
