@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.assertj.core.api.Assertions;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest(classes = LunarMgmtApplication.class)
@@ -50,5 +51,17 @@ class QueryDslTest {
         List<AdminUserEntity> adminUserList = query.from(adminUserEntity)
                 .where(adminUserEntity.adminUserId.contains("Park")).fetch();
         Assertions.assertThat(adminUserList).hasSize(2);
+    }
+
+    @Test
+    public void queryDslTestCustomRepository(){
+        // given
+        List<AdminUserDto> adminUserDtoList = new ArrayList<AdminUserDto>();
+
+        // when
+        adminUserDtoList = adminUserRepository.findByAdminUserList();
+
+        // then
+        Assertions.assertThat(adminUserDtoList).hasSize(2);
     }
 }
