@@ -2,7 +2,6 @@ package com.lunar.lunarMgmt.api.system.controller;
 
 import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.api.system.service.AdminUserService;
-import com.lunar.lunarMgmt.common.jpa.entities.AdminUserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;

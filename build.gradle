@@ -58,6 +58,7 @@ dependencies {
 
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation("org.junit.platform:junit-platform-launcher:1.5.2")
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
 }
 
