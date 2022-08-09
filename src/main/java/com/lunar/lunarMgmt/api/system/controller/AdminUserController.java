@@ -18,4 +18,10 @@ public class AdminUserController {
     adminUserService.saveAdminUser(adminUserDto, currentUser);
   }
 
+  // 단순히 page 목록을
+//  @GetMapping("/get/user/list")
+//  public PageResponse<AdminUserEntity, AdminUserDto> searchAdminUserList(@ModelAttribute AdminUserSearchDto adminUserSearchDto
+//          , @ModelAttribute PageRequest pageRequest){
+//    return adminUserService.searchAdminUserList(adminUserSearchDto, pageRequest);
+//  }
 }

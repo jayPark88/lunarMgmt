@@ -2,18 +2,18 @@ package com.lunar.lunarMgmt.api;
 
 import com.lunar.lunarMgmt.LunarMgmtApplication;
 import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
+import com.lunar.lunarMgmt.api.system.model.AdminUserListSearchDto;
 import com.lunar.lunarMgmt.common.jpa.entities.AdminUserEntity;
 import static com.lunar.lunarMgmt.common.jpa.entities.QAdminUserEntity.adminUserEntity;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminUserRepository;
+import com.lunar.lunarMgmt.common.model.PageRequest;
 import com.querydsl.jpa.impl.JPAQuery;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.assertj.core.api.Assertions;
+import org.springframework.data.domain.Page;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
@@ -54,14 +54,35 @@ class QueryDslTest {
     }
 
     @Test
-    public void queryDslTestCustomRepository(){
+    public void queryDslTestCustomRepositoryPage(){
         // given
-        List<AdminUserDto> adminUserDtoList = new ArrayList<AdminUserDto>();
+        PageRequest pageRequest = new PageRequest();
+        pageRequest.setPage(1);
+        pageRequest.setSize(15);
+        pageRequest.setSort("adminUserId");
+        pageRequest.setDirection("asc");
+
+        AdminUserListSearchDto adminUserListSearchDto = new AdminUserListSearchDto();
+        adminUserListSearchDto.setAdminUserId("sub");
 
         // when
-        adminUserDtoList = adminUserRepository.findByAdminUserList();
+        Page<AdminUserDto> adminUserDtoList = adminUserRepository.findByAdminUserPage(adminUserListSearchDto, pageRequest);
 
         // then
+        Assertions.assertThat(adminUserDtoList.getContent()).hasSize(1);
+    }
+
+    @Test
+    public void queryDslTestCustomRepositoryList(){
+        // given
+        List<AdminUserDto> adminUserDtoList = new ArrayList<AdminUserDto>();
+        AdminUserListSearchDto adminUserListSearchDto = new AdminUserListSearchDto();
+        adminUserListSearchDto.setAdminUserId("jay");
+
+        // when
+        adminUserDtoList = adminUserRepository.findByAdminUserList(adminUserListSearchDto);
+
+        //then
         Assertions.assertThat(adminUserDtoList).hasSize(2);
     }
 }
