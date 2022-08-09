@@ -4,7 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.api.system.abst.sub.AdminUserSub;
+import com.lunar.lunarMgmt.api.system.model.AdminUserListSearchDto;
 import com.lunar.lunarMgmt.common.jpa.entities.AdminUserEntity;
+import com.lunar.lunarMgmt.common.jpa.repository.AdminUserRepository;
+import com.lunar.lunarMgmt.common.model.PageRequest;
+import com.lunar.lunarMgmt.common.model.PageResponse;
 import com.lunar.lunarMgmt.common.utils.AdminBaseIdNmSetUtilIImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,12 +19,19 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class AdminUserService {
-
   private final AdminUserSub adminUserSub;
+  private final AdminUserRepository adminUserRepository;
 
   // HQ-ADMIN 사용자 신규 등록 및 수정
   public void saveAdminUser(AdminUserDto adminUserDto, AdminUserDto currentUser){
     adminUserSub.setAdminbaseIdNmSetUtilInterface(new AdminBaseIdNmSetUtilIImpl());
     adminUserSub.saveAdminUser(new ObjectMapper().registerModule(new JavaTimeModule()).convertValue(adminUserSub.adminbaseIdNmSetUtil.adminBaseInfoSetting(adminUserDto, currentUser), AdminUserDto.class));
+  }
+
+  public PageResponse<AdminUserEntity, AdminUserDto> searchAdminUserList(AdminUserListSearchDto searchDto, PageRequest pageRequest){
+    pageRequest.setSort("adminUserSeq");
+    pageRequest.setDirection("desc");
+    Page<AdminUserDto> pageList = adminUserRepository.findByAdminUserPage(searchDto, pageRequest);
+    return new PageResponse<>(pageList);
   }
 }
