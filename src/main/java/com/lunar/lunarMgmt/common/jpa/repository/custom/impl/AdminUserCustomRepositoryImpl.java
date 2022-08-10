@@ -3,7 +3,6 @@ package com.lunar.lunarMgmt.common.jpa.repository.custom.impl;
 import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.api.system.model.AdminUserListSearchDto;
 import com.lunar.lunarMgmt.common.jpa.entities.AdminUserEntity;
-import com.lunar.lunarMgmt.common.jpa.entities.QAdminUserEntity;
 import com.lunar.lunarMgmt.common.jpa.repository.custom.AdminUserCustomRepository;
 import com.lunar.lunarMgmt.common.model.PageRequest;
 import com.querydsl.core.BooleanBuilder;
@@ -15,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
@@ -58,9 +58,27 @@ public class AdminUserCustomRepositoryImpl implements AdminUserCustomRepository 
     // where절에 있는 조건 check method
     private BooleanBuilder setCondition(AdminUserListSearchDto searchDto) {
         BooleanBuilder booleanBuilder = new BooleanBuilder();
+
         if (StringUtils.hasText(searchDto.getAdminUserId())) {
             booleanBuilder.and(adminUserEntity.adminUserId.contains(searchDto.getAdminUserId()));
         }
+
+        if (StringUtils.hasText(searchDto.getAdminUserNm())) {
+            booleanBuilder.and(adminUserEntity.adminUserNm.contains(searchDto.getAdminUserNm()));
+        }
+
+        if (StringUtils.hasText(searchDto.getDept())) {
+            booleanBuilder.and(adminUserEntity.dept.eq(searchDto.getDept()));
+        }
+
+        if (StringUtils.hasText(searchDto.getPosition())) {
+            booleanBuilder.and(adminUserEntity.position.eq(searchDto.getPosition()));
+        }
+
+        if(!ObjectUtils.isEmpty(searchDto.getUseYn())){
+            booleanBuilder.and(adminUserEntity.useYn.eq(searchDto.getUseYn()));
+        }
+
         return booleanBuilder;
     }
 }

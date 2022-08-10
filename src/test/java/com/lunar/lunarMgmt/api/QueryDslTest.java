@@ -64,6 +64,10 @@ class QueryDslTest {
 
         AdminUserListSearchDto adminUserListSearchDto = new AdminUserListSearchDto();
         adminUserListSearchDto.setAdminUserId("sub");
+        adminUserListSearchDto.setAdminUserNm("지");
+        adminUserListSearchDto.setDept("개발부서");
+        adminUserListSearchDto.setPosition("책임");
+        adminUserListSearchDto.setUseYn('Y');
 
         // when
         Page<AdminUserDto> adminUserDtoList = adminUserRepository.findByAdminUserPage(adminUserListSearchDto, pageRequest);
