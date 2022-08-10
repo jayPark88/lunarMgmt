@@ -2,8 +2,11 @@ package com.lunar.lunarMgmt.api.system.abst.sub;
 
 import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.api.system.abst.AdminUserAbstract;
+import com.lunar.lunarMgmt.api.system.model.AdminUserListSearchDto;
 import com.lunar.lunarMgmt.common.jpa.entities.AdminUserEntity;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminUserRepository;
+import com.lunar.lunarMgmt.common.model.PageRequest;
+import com.lunar.lunarMgmt.common.model.PageResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -36,6 +39,17 @@ public class AdminUserSub extends AdminUserAbstract {
 
     // 해당 setting된 값을 save해준다.
     adminUserRepository.save(adminUserDto.to());
+  }
+
+  @Override
+  public PageResponse<AdminUserEntity, AdminUserDto> searchAdminUserList(AdminUserListSearchDto searchDto, PageRequest pageRequest) {
+    Page<AdminUserDto> pageList = adminUserRepository.findByAdminUserPage(searchDto, pageRequest);
+    return new PageResponse<>(pageList);
+  }
+
+  @Override
+  public boolean adminUserDuplicateCheck(String adminUserId) {
+    return adminUserRepository.findByAdminUserId(adminUserId).isPresent();
   }
 
   // checkAdminUser가 존재하는지 check

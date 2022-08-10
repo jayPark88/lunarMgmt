@@ -45,7 +45,9 @@ public class AdminUserCustomRepositoryImpl implements AdminUserCustomRepository 
                         , adminUserEntity.adminUserNm
                         , adminUserEntity.dept
                         , adminUserEntity.position
-                        , adminUserEntity.auth.authNm))
+                        , adminUserEntity.auth.authNm
+                        , adminUserEntity.deleteYn
+                ))
                 .from(adminUserEntity)
                 .where(setCondition(searchDto))
                 .offset(pageRequest.of().getOffset())

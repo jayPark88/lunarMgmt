@@ -24,10 +24,14 @@ public class AdminUserController {
     adminUserService.saveAdminUser(adminUserDto, currentUser);
   }
 
-  // 단순히 page 목록을
-  @GetMapping("/get/user/list")
+  @GetMapping("/user/list")
   public PageResponse<AdminUserEntity, AdminUserDto> searchAdminUserList(@ModelAttribute AdminUserListSearchDto searchDto
           , @ModelAttribute PageRequest pageRequest){
     return adminUserService.searchAdminUserList(searchDto, pageRequest);
+  }
+
+  @GetMapping("/duplicate/user/{adminUserId}")
+  public boolean adminUserDuplicateCheck(@PathVariable String adminUserId){
+    return adminUserService.adminUserDuplicateCheck(adminUserId);
   }
 }

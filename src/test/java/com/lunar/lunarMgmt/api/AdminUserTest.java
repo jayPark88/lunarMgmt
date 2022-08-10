@@ -18,10 +18,11 @@ import org.springframework.data.domain.Page;
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootTest(classes = LunarMgmtApplication.class)
 @DisplayName("Admin User의 이름이 p를 포함한 데이터를 조회한다.")
-class QueryDslTest {
+class AdminUserTest {
 
     @Autowired
     private AdminUserRepository adminUserRepository;
@@ -34,10 +35,10 @@ class QueryDslTest {
         String adminUserId = "jayPark";
 
         // when
-        AdminUserDto adminUserDto = new AdminUserDto(adminUserRepository.findByAdminUserId(adminUserId));
+        AdminUserDto adminUserDto = new AdminUserDto(adminUserRepository.findByAdminUserId(adminUserId).get());
 
         // then
-        Assertions.assertThat(adminUserDto.getAdminUserId()).isEqualTo(adminUserRepository.findByAdminUserId(adminUserId).getAdminUserId());
+        Assertions.assertThat(adminUserDto.getAdminUserId()).isEqualTo(adminUserRepository.findByAdminUserId(adminUserId).get().getAdminUserId());
     }
 
     @Test
@@ -88,5 +89,17 @@ class QueryDslTest {
 
         //then
         Assertions.assertThat(adminUserDtoList).hasSize(2);
+    }
+
+    @Test
+    public void adminUserDuplicateCheck(){
+        // given
+        String adminUserId = "jayPark";
+
+        // when
+        Optional<AdminUserEntity> optionalAdminUserEntity = adminUserRepository.findByAdminUserId(adminUserId);
+
+        // then
+        Assertions.assertThat(optionalAdminUserEntity.isPresent()).isTrue();
     }
 }

@@ -25,25 +25,25 @@ public class LoginService {
   private final PasswordEncoder passwordEncoder;
   private final JwtUtil jwtUtil;
   public Tokens login(AdminUserDto adminUser, HttpServletResponse response) throws NotFoundUserException, JsonProcessingException {
-    AdminUserEntity adminUserEntity = adminUserRepo.findByAdminUserId(adminUser.getAdminUserId());
+    Optional<AdminUserEntity> adminUserEntity = adminUserRepo.findByAdminUserId(adminUser.getAdminUserId());
 
-    if (ObjectUtils.isEmpty(adminUserEntity)) {
+    if (!adminUserEntity.isPresent()) {
       throw new NotFoundUserException();
     }
-    if (adminUserEntity.getDeleteYn().equals('Y')) {
+    if (adminUserEntity.get().getDeleteYn().equals('Y')) {
       throw new NotFoundUserException("삭제된 사용자입니다.");
     }
 
-    if (adminUserEntity.getUseYn().equals('N')) {
+    if (adminUserEntity.get().getUseYn().equals('N')) {
       throw new NotFoundUserException("기관 또는 사용자가 이용 가능한 상태가 아닙니다.");
     }
 
     // 패스워드 체크 (필요 시 위치 이동)
-    if (!passwordEncoder.matches(adminUser.getAdminUserPwd(), adminUserEntity.getAdminUserPwd())) {
+    if (!passwordEncoder.matches(adminUser.getAdminUserPwd(), adminUserEntity.get().getAdminUserPwd())) {
       throw new NotFoundUserException();
     }
 
-    AdminUserDto adminUserDto = new AdminUserDto(adminUserEntity).withoutPasswd();
+    AdminUserDto adminUserDto = new AdminUserDto(adminUserEntity.get()).withoutPasswd();
 
     // 패스워드 체크 후 비밀번호 null
     final String accessToken = jwtUtil.generateToken(adminUserDto);

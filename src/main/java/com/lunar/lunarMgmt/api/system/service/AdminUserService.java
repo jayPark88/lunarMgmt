@@ -20,9 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AdminUserService {
   private final AdminUserSub adminUserSub;
-  private final AdminUserRepository adminUserRepository;
 
-  // HQ-ADMIN 사용자 신규 등록 및 수정
   public void saveAdminUser(AdminUserDto adminUserDto, AdminUserDto currentUser){
     adminUserSub.setAdminbaseIdNmSetUtilInterface(new AdminBaseIdNmSetUtilIImpl());
     adminUserSub.saveAdminUser(new ObjectMapper().registerModule(new JavaTimeModule()).convertValue(adminUserSub.adminbaseIdNmSetUtil.adminBaseInfoSetting(adminUserDto, currentUser), AdminUserDto.class));
@@ -31,7 +29,10 @@ public class AdminUserService {
   public PageResponse<AdminUserEntity, AdminUserDto> searchAdminUserList(AdminUserListSearchDto searchDto, PageRequest pageRequest){
     pageRequest.setSort("adminUserSeq");
     pageRequest.setDirection("desc");
-    Page<AdminUserDto> pageList = adminUserRepository.findByAdminUserPage(searchDto, pageRequest);
-    return new PageResponse<>(pageList);
+    return adminUserSub.searchAdminUserList(searchDto, pageRequest);
+  }
+
+  public boolean adminUserDuplicateCheck(String siteId){
+    return adminUserSub.adminUserDuplicateCheck(siteId);
   }
 }
