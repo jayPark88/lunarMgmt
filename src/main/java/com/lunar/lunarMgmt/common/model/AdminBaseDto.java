@@ -1,12 +1,17 @@
 package com.lunar.lunarMgmt.common.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
 
-@Data
+@Setter
+@Getter
+@SuperBuilder
+@AllArgsConstructor
+@NoArgsConstructor
 public class AdminBaseDto {
 
   private String createId;

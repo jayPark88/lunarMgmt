@@ -1,22 +1,26 @@
 package com.lunar.lunarMgmt.common.jpa.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Getter
 @Builder
+@DynamicInsert
+@DynamicUpdate
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(
         name = "ADMIN_AUTH_MENU",
-        uniqueConstraints = {
+        uniqueConstraints={
                 @UniqueConstraint(
-                        columnNames = {"AUTH_SEQ", "MENU_SEQ"}
+                        columnNames={"AUTH_SEQ","MENU_SEQ"}
                 )
         }
 )
@@ -40,7 +44,6 @@ public class AdminAuthMenuEntity {
 
   @Column(name = "WRITE_YN", nullable = false)
   private Character writeYn;
-
 
   @Column(name = "CREATE_ID", nullable = false)
   private String createId;

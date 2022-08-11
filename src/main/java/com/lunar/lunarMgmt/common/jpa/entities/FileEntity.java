@@ -1,10 +1,17 @@
 package com.lunar.lunarMgmt.common.jpa.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
+@Setter
+@Getter
+@SuperBuilder
+@DynamicInsert
+@DynamicUpdate
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor

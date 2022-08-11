@@ -1,12 +1,17 @@
 package com.lunar.lunarMgmt.common.jpa.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
+@Getter
+@SuperBuilder
+@DynamicInsert
+@DynamicUpdate
 @Entity
 @Table(name = "ADMIN_MENU")
 @AllArgsConstructor
