@@ -8,8 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
-@Builder
+@SuperBuilder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,6 +27,7 @@ public class AdminUserDto extends AdminBaseDto implements ChangableToFromEntity<
   private Character useYn;
 
   public AdminUserDto(AdminUserEntity entity) {
+    super();
     from(entity);
   }
 
@@ -41,6 +43,12 @@ public class AdminUserDto extends AdminBaseDto implements ChangableToFromEntity<
             .auth(authSeq != null ? AdminAuthEntity.builder().authSeq(authSeq).build() : null)
             .deleteYn(deleteYn)
             .useYn(useYn)
+            .createId(super.getCreateId())
+            .createNm(super.getCreateNm())
+            .createDatetime(super.getCreateDatetime())
+            .modifyId(super.getModifyId())
+            .modifyNm(super.getModifyNm())
+            .modifyDatetime(super.getModifyDatetime())
             .build();
   }
 
@@ -52,9 +60,15 @@ public class AdminUserDto extends AdminBaseDto implements ChangableToFromEntity<
     adminUserPwd = entity.getAdminUserPwd();
     dept = entity.getDept();
     position = entity.getPosition();
+    authSeq = entity.getAuth().getAuthSeq();
     deleteYn = entity.getDeleteYn();
     useYn = entity.getUseYn();
-    authSeq = entity.getAuth().getAuthSeq();
+    super.setCreateId(entity.getCreateId());
+    super.setCreateNm(entity.getCreateNm());
+    super.setCreateDatetime(entity.getCreateDatetime());
+    super.setModifyId(entity.getModifyId());
+    super.setModifyNm(entity.getModifyNm());
+    super.setModifyDatetime(entity.getModifyDatetime());
   }
 
   public AdminUserDto withoutPasswd() {
