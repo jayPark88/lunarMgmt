@@ -23,17 +23,9 @@ public class AuthDto extends AdminBaseDto implements ChangableToFromEntity<Admin
     private String authNm;
     private String authDesc;
     private Character useYn;
-
-    @Builder.Default// 기본값 설정을 위한 어노테이션이다. 값을 설정하면 된다. 아래는 Collection List로 초기화를 해주는 것임.
-    private List<MenuDto> menus = new ArrayList<>();
-
-    @Builder.Default
-    private List<AdminUserDto> users = new ArrayList<>();
-
     public AuthDto(AdminAuthEntity entity) {
         from(entity);
     }
-
     @Override
     public AdminAuthEntity to() {
         return AdminAuthEntity.builder()

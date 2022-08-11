@@ -32,7 +32,7 @@ public class MenuDto extends AdminBaseDto implements ChangableToFromEntity<Admin
     private String onImageUrl;
     private Long offImageFileSeq;
     private String offImageUrl;
-    @Builder.Default
+    @Builder.Default // 기본값 설정을 위한 어노테이션이다. 값을 설정하면 된다. 아래는 Collection List로 초기화를 해주는 것임.
     private List<MenuDto> children = new ArrayList<>();
     private Character readYn;
     private Character writeYn;
