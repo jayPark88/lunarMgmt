@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest(classes = LunarMgmtApplication.class)
-@DisplayName("Admin User의 이름이 p를 포함한 데이터를 조회한다.")
 class AdminUserTest {
 
     @Autowired
