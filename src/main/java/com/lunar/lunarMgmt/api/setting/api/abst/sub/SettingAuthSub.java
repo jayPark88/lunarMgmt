@@ -20,4 +20,8 @@ public class SettingAuthSub extends SettingAuthAbstract {
         return adminAuthRepository.findAll().stream().parallel().filter(item -> item.getAuthNm().contains(authNm))
                 .map(AuthDto::new).collect(Collectors.toList());
     }
+    @Override
+    public AuthDto selectAuth(Long authSeq) {
+        return adminAuthRepository.findById(authSeq).map(AuthDto::new).orElse(null);
+    }
 }

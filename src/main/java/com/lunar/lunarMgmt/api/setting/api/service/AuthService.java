@@ -11,7 +11,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AuthService {
     private final SettingAuthSub settingAuthSub;
-    public List<AuthDto> selectAuthList(String authNm){
+
+    public List<AuthDto> selectAuthList(String authNm) {
         return settingAuthSub.selectAuthList(authNm);
+    }
+
+    public AuthDto selectAuth(Long authSeq) {
+        return settingAuthSub.selectAuth(authSeq);
     }
 }
