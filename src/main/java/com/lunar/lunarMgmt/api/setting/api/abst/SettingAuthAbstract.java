@@ -18,4 +18,7 @@ public abstract class SettingAuthAbstract {
     // 권한 상세 정보 조회
     public abstract AuthDto selectAuth(Long authSeq);
 
+    // 권한 신규 생성
+    public abstract void saveAuth(AuthDto authDto);
+
 }

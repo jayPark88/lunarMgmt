@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @SpringBootTest(classes = LunarMgmtApplication.class)
@@ -44,5 +45,28 @@ class AdminAuthTest {
 
         //then
         Assertions.assertThat(authDto).hashCode();
+    }
+
+    @Test
+    @DisplayName("권한 상세 조회 테스트")
+    public void saveAuth(){
+        // given
+        AuthDto authDto = AuthDto.builder()
+                .authCd("AUTH_GENERAL")
+                .authNm("일반 관리자")
+                .authDesc("일반 관리자")
+                .useYn('Y')
+                .createId("jayPark")
+                .createNm("박지훈")
+                .createDatetime(LocalDateTime.now())
+                .modifyId("jayPark")
+                .modifyNm("박지훈")
+                .modifyDatetime(LocalDateTime.now()).build();
+
+        // when
+        adminAuthRepository.save(authDto.to());
+
+        // then
+        Assertions.assertThat(adminAuthRepository.findAll().stream().filter(item -> item.getAuthCd().equals("AUTH_GENERAL")).findFirst()).isNotEmpty();
     }
 }
