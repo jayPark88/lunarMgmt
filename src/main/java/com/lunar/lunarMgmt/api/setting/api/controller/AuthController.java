@@ -37,4 +37,10 @@ public class AuthController {
     public void deleteAuth(@PathVariable Long authSeq){
         authService.deleteAuth(authSeq);
     }
+
+//    @GetMapping("/users/{authSeq}")
+//    public List<AuthDto> selectAuthUserList(@PathVariable Long authSeq){
+//        return authService.selectAuthList()
+//    }
+
 }

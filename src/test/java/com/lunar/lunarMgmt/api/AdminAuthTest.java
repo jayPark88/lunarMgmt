@@ -1,6 +1,7 @@
 package com.lunar.lunarMgmt.api;
 
 import com.lunar.lunarMgmt.LunarMgmtApplication;
+import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.api.setting.api.abst.SettingAuthAbstract;
 import com.lunar.lunarMgmt.api.setting.api.model.AuthDto;
 import com.lunar.lunarMgmt.common.jpa.entities.AdminAuthEntity;
@@ -121,6 +122,21 @@ class AdminAuthTest {
         // then
         assertAll(
                 () -> assertFalse(adminAuthRepository.findById(authSeq).isPresent())
+        );
+    }
+
+    @Test
+    @DisplayName("해당 권한에 속한 사용자 리스트 조회")
+    public void selectAuthUserList(){
+        // given
+        Long authSeq = 1L;
+
+        // when
+        List<AdminUserDto> adminUserDtos = settingAuthSub.selectAuthUserList(authSeq);
+
+        // then
+        assertAll(
+                () -> assertTrue(adminUserDtos.size()>0)
         );
     }
 }

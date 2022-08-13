@@ -1,8 +1,10 @@
 package com.lunar.lunarMgmt.api.setting.api.abst.sub;
 
+import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.api.setting.api.abst.SettingAuthAbstract;
 import com.lunar.lunarMgmt.api.setting.api.model.AuthDto;
 import com.lunar.lunarMgmt.common.jpa.entities.AdminAuthEntity;
+import com.lunar.lunarMgmt.common.jpa.entities.AdminUserEntity;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminAuthRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,5 +44,13 @@ public class SettingAuthSub extends SettingAuthAbstract {
         }else{
             adminAuthRepository.deleteById(authSeq);
         }
+    }
+
+    @Override
+    public List<AdminUserDto> selectAuthUserList(Long authSeq) {
+        List<AdminUserEntity> adminUserEntityList = adminAuthRepository.findById(authSeq).get().getAdminUserList();
+        return adminUserEntityList.stream().map((item) ->{
+            return new AdminUserDto(item).withoutPasswd();
+        }).collect(Collectors.toList());
     }
 }

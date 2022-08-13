@@ -1,5 +1,6 @@
 package com.lunar.lunarMgmt.api.setting.api.abst;
 
+import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.api.setting.api.model.AuthDto;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminAuthRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,5 +24,8 @@ public abstract class SettingAuthAbstract {
 
     // 권한 삭제
     public abstract void deleteAuth(Long authSeq);
+
+    // 해당 권한에 속한 사용자 리스트 조회
+    public abstract List<AdminUserDto> selectAuthUserList(Long authSeq);
 
 }
