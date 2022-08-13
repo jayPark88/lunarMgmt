@@ -22,4 +22,9 @@ public class AuthController {
     public AuthDto selectAuth(@PathVariable Long authSeq) {
         return authService.selectAuth(authSeq);
     }
+
+    @PostMapping("/save")
+    public void saveAuth(@RequestBody AuthDto authDto){
+        authService.saveAuth(authDto);
+    }
 }
