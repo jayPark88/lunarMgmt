@@ -24,7 +24,12 @@ public class AuthController {
     }
 
     @PostMapping("/save")
-    public void saveAuth(@RequestBody AuthDto authDto){
+    public void saveAuth(@RequestBody AuthDto authDto) {
+        authService.saveAuth(authDto);
+    }
+
+    @PutMapping("/update")
+    public void updateAuth(@RequestBody AuthDto authDto){
         authService.saveAuth(authDto);
     }
 }
