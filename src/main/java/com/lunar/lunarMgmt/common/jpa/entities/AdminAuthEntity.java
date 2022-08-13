@@ -41,7 +41,11 @@ public class AdminAuthEntity extends AdminBaseEntity{
   @Column(name = "USE_YN", nullable = false)
   private Character useYn;
 
-  @Builder.Default
+  @Builder.Default// 해당 필드의 기본값을 그냥 new ArrayList<>(); collection list 객체 생성 초기화로 설정함.
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "auth")
   private List<AdminAuthMenuEntity> adminAuthMenuList = new ArrayList<>();
+
+  @Builder.Default
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "auth")
+  private List<AdminUserEntity> adminUserList = new ArrayList<>();
 }
