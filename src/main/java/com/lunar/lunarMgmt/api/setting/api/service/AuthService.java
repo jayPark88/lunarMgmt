@@ -23,4 +23,8 @@ public class AuthService {
     public void saveAuth(AuthDto authDto){
         settingAuthSub.saveAuth(authDto);
     }
+
+    public void deleteAuth(Long authSeq){
+        settingAuthSub.deleteAuth(authSeq);
+    }
 }

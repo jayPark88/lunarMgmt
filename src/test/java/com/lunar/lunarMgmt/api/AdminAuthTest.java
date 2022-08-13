@@ -108,4 +108,19 @@ class AdminAuthTest {
         );
 
     }
+
+    @Test
+    @DisplayName("HQ-ADMIN 권한 삭제 테스트")
+    public void deleteAuth(){
+        // given
+        Long authSeq = 1L;
+
+        // when
+        settingAuthSub.deleteAuth(authSeq);
+
+        // then
+        assertAll(
+                () -> assertFalse(adminAuthRepository.findById(authSeq).isPresent())
+        );
+    }
 }

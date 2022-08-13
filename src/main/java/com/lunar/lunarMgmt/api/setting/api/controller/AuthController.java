@@ -32,4 +32,9 @@ public class AuthController {
     public void updateAuth(@RequestBody AuthDto authDto){
         authService.saveAuth(authDto);
     }
+
+    @DeleteMapping("/delete/{authSeq}")
+    public void deleteAuth(@PathVariable Long authSeq){
+        authService.deleteAuth(authSeq);
+    }
 }

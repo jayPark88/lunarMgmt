@@ -21,4 +21,7 @@ public abstract class SettingAuthAbstract {
     // 권한 신규 생성
     public abstract void saveAuth(AuthDto authDto);
 
+    // 권한 삭제
+    public abstract void deleteAuth(Long authSeq);
+
 }
