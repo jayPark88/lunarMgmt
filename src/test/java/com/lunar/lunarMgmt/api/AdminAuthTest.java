@@ -2,19 +2,20 @@ package com.lunar.lunarMgmt.api;
 
 import com.lunar.lunarMgmt.LunarMgmtApplication;
 import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
-import com.lunar.lunarMgmt.api.setting.api.abst.SettingAuthAbstract;
-import com.lunar.lunarMgmt.api.setting.api.model.AuthDto;
+import com.lunar.lunarMgmt.api.setting.abst.SettingAuthAbstract;
+import com.lunar.lunarMgmt.api.setting.model.AuthDto;
+import com.lunar.lunarMgmt.api.setting.model.VueMenuDto;
 import com.lunar.lunarMgmt.common.jpa.entities.AdminAuthEntity;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminAuthRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -138,5 +139,26 @@ class AdminAuthTest {
         assertAll(
                 () -> assertTrue(adminUserDtos.size()>0)
         );
+    }
+    
+    @Test
+    @DisplayName("해당 군한에 속한 메뉴 리스트 조회")
+    public void selectMenuAuthList(){
+        // given
+        Long authSeq = 1L;
+        AtomicInteger index = new AtomicInteger();
+
+        // when
+        List<VueMenuDto> vueMenuDtos = settingAuthSub.selectMenuAuthList(authSeq);
+        vueMenuDtos.forEach(item -> {
+            index.getAndIncrement();
+            System.out.println("vueMenuDtos : "+index+" = "+item);
+        });
+
+        // when
+        assertAll(
+                ()-> assertTrue(vueMenuDtos.size()>0)
+        );
+
     }
 }

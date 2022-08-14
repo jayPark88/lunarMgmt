@@ -1,24 +1,27 @@
-package com.lunar.lunarMgmt.api.setting.api.abst.sub;
+package com.lunar.lunarMgmt.api.setting.abst.sub;
 
 import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
-import com.lunar.lunarMgmt.api.setting.api.abst.SettingAuthAbstract;
-import com.lunar.lunarMgmt.api.setting.api.model.AuthDto;
+import com.lunar.lunarMgmt.api.setting.abst.SettingAuthAbstract;
+import com.lunar.lunarMgmt.api.setting.model.AuthDto;
+import com.lunar.lunarMgmt.api.setting.model.VueMenuDto;
+import com.lunar.lunarMgmt.api.setting.util.AuthMenuUtil;
 import com.lunar.lunarMgmt.common.jpa.entities.AdminAuthEntity;
 import com.lunar.lunarMgmt.common.jpa.entities.AdminUserEntity;
+import com.lunar.lunarMgmt.common.jpa.repository.AdminAuthMenuRepository;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminAuthRepository;
+import com.lunar.lunarMgmt.common.jpa.repository.AdminMenuRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
 @Transactional
 public class SettingAuthSub extends SettingAuthAbstract {
 
-    public SettingAuthSub(AdminAuthRepository adminAuthRepository) {
-        super(adminAuthRepository);
+    public SettingAuthSub(AdminAuthRepository adminAuthRepository, AdminAuthMenuRepository adminAuthMenuRepository, AdminMenuRepository adminMenuRepository, AuthMenuUtil authMenuUtil) {
+        super(adminAuthRepository, adminAuthMenuRepository, adminMenuRepository, authMenuUtil);
     }
 
     @Override
@@ -52,5 +55,18 @@ public class SettingAuthSub extends SettingAuthAbstract {
         return adminUserEntityList.stream().map((item) ->{
             return new AdminUserDto(item).withoutPasswd();
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<VueMenuDto> selectMenuAuthList(Long authSeq) {
+        //권한 메뉴에서 권한에 등록할 메뉴 리스트 가져오기
+        List<VueMenuDto> menus = authMenuUtil.selectAuthVueMenuList(authSeq);
+
+        // 시작은 최상위 부모, 부모아이디가 자신인 메뉴들 ( parentmenuId == menuId )
+        // 두개의 데이터들로 부모, 자식 구별하여 list에 재구성하여 반환 시켜준다.
+        return authMenuUtil.createVueMenuTree(
+                menus.stream().filter((m) -> m.getData().getParentMenuId() == 0)
+                        .collect(Collectors.toList()),
+                menus);
     }
 }

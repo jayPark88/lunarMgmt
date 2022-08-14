@@ -1,8 +1,12 @@
-package com.lunar.lunarMgmt.api.setting.api.abst;
+package com.lunar.lunarMgmt.api.setting.abst;
 
 import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
-import com.lunar.lunarMgmt.api.setting.api.model.AuthDto;
+import com.lunar.lunarMgmt.api.setting.model.AuthDto;
+import com.lunar.lunarMgmt.api.setting.model.VueMenuDto;
+import com.lunar.lunarMgmt.api.setting.util.AuthMenuUtil;
+import com.lunar.lunarMgmt.common.jpa.repository.AdminAuthMenuRepository;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminAuthRepository;
+import com.lunar.lunarMgmt.common.jpa.repository.AdminMenuRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +16,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public abstract class SettingAuthAbstract {
     protected final AdminAuthRepository adminAuthRepository;
+    protected final AdminAuthMenuRepository adminAuthMenuRepository;
+    protected final AdminMenuRepository adminMenuRepository;
+    protected final AuthMenuUtil authMenuUtil;
 
     // 권한 리스트 조회
     public abstract List<AuthDto> selectAuthList(String authNm);
@@ -27,5 +34,8 @@ public abstract class SettingAuthAbstract {
 
     // 해당 권한에 속한 사용자 리스트 조회
     public abstract List<AdminUserDto> selectAuthUserList(Long authSeq);
+    
+    // 해당 권한의 속한 메뉴 리스트 조회
+    public abstract List<VueMenuDto> selectMenuAuthList(Long authSeq);
 
 }

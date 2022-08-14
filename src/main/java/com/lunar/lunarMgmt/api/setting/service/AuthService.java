@@ -1,7 +1,8 @@
-package com.lunar.lunarMgmt.api.setting.api.service;
+package com.lunar.lunarMgmt.api.setting.service;
 
-import com.lunar.lunarMgmt.api.setting.api.abst.SettingAuthAbstract;
-import com.lunar.lunarMgmt.api.setting.api.model.AuthDto;
+import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
+import com.lunar.lunarMgmt.api.setting.abst.SettingAuthAbstract;
+import com.lunar.lunarMgmt.api.setting.model.AuthDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,5 +27,9 @@ public class AuthService {
 
     public void deleteAuth(Long authSeq){
         settingAuthSub.deleteAuth(authSeq);
+    }
+
+    public List<AdminUserDto> selectAuthUserList(Long authSeq){
+        return settingAuthSub.selectAuthUserList(authSeq);
     }
 }

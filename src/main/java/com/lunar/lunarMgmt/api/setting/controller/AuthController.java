@@ -1,7 +1,8 @@
-package com.lunar.lunarMgmt.api.setting.api.controller;
+package com.lunar.lunarMgmt.api.setting.controller;
 
-import com.lunar.lunarMgmt.api.setting.api.model.AuthDto;
-import com.lunar.lunarMgmt.api.setting.api.service.AuthService;
+import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
+import com.lunar.lunarMgmt.api.setting.model.AuthDto;
+import com.lunar.lunarMgmt.api.setting.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,9 +39,8 @@ public class AuthController {
         authService.deleteAuth(authSeq);
     }
 
-//    @GetMapping("/users/{authSeq}")
-//    public List<AuthDto> selectAuthUserList(@PathVariable Long authSeq){
-//        return authService.selectAuthList()
-//    }
-
+    @GetMapping("/users/{authSeq}")
+    public List<AdminUserDto> selectAuthUserList(@PathVariable Long authSeq){
+        return authService.selectAuthUserList(authSeq);
+    }
 }

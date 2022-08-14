@@ -1,4 +1,4 @@
-package com.lunar.lunarMgmt.api.setting.api.model;
+package com.lunar.lunarMgmt.api.setting.model;
 
 import com.lunar.lunarMgmt.common.intf.ChangableToFromEntity;
 import com.lunar.lunarMgmt.common.jpa.entities.AdminAuthMenuEntity;
@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.experimental.SuperBuilder;
 import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;

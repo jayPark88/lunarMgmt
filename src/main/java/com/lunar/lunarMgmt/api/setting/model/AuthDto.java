@@ -1,4 +1,4 @@
-package com.lunar.lunarMgmt.api.setting.api.model;
+package com.lunar.lunarMgmt.api.setting.model;
 
 import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.common.intf.ChangableToFromEntity;
