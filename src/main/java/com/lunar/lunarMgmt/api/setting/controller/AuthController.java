@@ -2,6 +2,7 @@ package com.lunar.lunarMgmt.api.setting.controller;
 
 import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.api.setting.model.AuthDto;
+import com.lunar.lunarMgmt.api.setting.model.VueMenuDto;
 import com.lunar.lunarMgmt.api.setting.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -30,17 +31,22 @@ public class AuthController {
     }
 
     @PutMapping("/update")
-    public void updateAuth(@RequestBody AuthDto authDto){
+    public void updateAuth(@RequestBody AuthDto authDto) {
         authService.saveAuth(authDto);
     }
 
     @DeleteMapping("/delete/{authSeq}")
-    public void deleteAuth(@PathVariable Long authSeq){
+    public void deleteAuth(@PathVariable Long authSeq) {
         authService.deleteAuth(authSeq);
     }
 
     @GetMapping("/users/{authSeq}")
-    public List<AdminUserDto> selectAuthUserList(@PathVariable Long authSeq){
+    public List<AdminUserDto> selectAuthUserList(@PathVariable Long authSeq) {
         return authService.selectAuthUserList(authSeq);
+    }
+
+    @GetMapping("/menus/{authSeq}")
+    public List<VueMenuDto> selectMenuAuthList(@PathVariable Long authSeq) {
+        return authService.selectMenuAuthMenutree(authSeq);
     }
 }

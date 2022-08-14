@@ -58,7 +58,7 @@ public class SettingAuthSub extends SettingAuthAbstract {
     }
 
     @Override
-    public List<VueMenuDto> selectMenuAuthList(Long authSeq) {
+    public List<VueMenuDto> selectMenuAuthMenutree(Long authSeq) {
         //권한 메뉴에서 권한에 등록할 메뉴 리스트 가져오기
         List<VueMenuDto> menus = authMenuUtil.selectAuthVueMenuList(authSeq);
 

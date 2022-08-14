@@ -149,7 +149,7 @@ class AdminAuthTest {
         AtomicInteger index = new AtomicInteger();
 
         // when
-        List<VueMenuDto> vueMenuDtos = settingAuthSub.selectMenuAuthList(authSeq);
+        List<VueMenuDto> vueMenuDtos = settingAuthSub.selectMenuAuthMenutree(authSeq);
         vueMenuDtos.forEach(item -> {
             index.getAndIncrement();
             System.out.println("vueMenuDtos : "+index+" = "+item);

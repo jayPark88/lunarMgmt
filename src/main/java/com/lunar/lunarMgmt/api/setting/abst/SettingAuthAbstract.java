@@ -36,6 +36,6 @@ public abstract class SettingAuthAbstract {
     public abstract List<AdminUserDto> selectAuthUserList(Long authSeq);
     
     // 해당 권한의 속한 메뉴 리스트 조회
-    public abstract List<VueMenuDto> selectMenuAuthList(Long authSeq);
+    public abstract List<VueMenuDto> selectMenuAuthMenutree(Long authSeq);
 
 }
