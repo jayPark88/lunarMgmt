@@ -57,4 +57,9 @@ public class AuthController {
         authService.saveAuthMenu(authMenuDtos, adminUserDto);
     }
 
+    @PostMapping(value = "/users/{authSeq}")
+    public void saveAuthUsers(@PathVariable Long authSeq, @RequestBody Long[] userSeqList) {
+        authService.saveAuthUsers(authSeq, userSeqList);
+    }
+
 }

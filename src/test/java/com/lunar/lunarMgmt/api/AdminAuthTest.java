@@ -9,13 +9,13 @@ import com.lunar.lunarMgmt.api.setting.model.VueMenuDto;
 import com.lunar.lunarMgmt.common.jpa.entities.AdminAuthEntity;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminAuthMenuRepository;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminAuthRepository;
+import com.lunar.lunarMgmt.common.jpa.repository.AdminUserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -32,6 +32,8 @@ class AdminAuthTest {
     private SettingAuthAbstract settingAuthSub;
     @Autowired
     private AdminAuthMenuRepository adminAuthMenuRepository;
+    @Autowired
+    private AdminUserRepository adminUserRepository;
 
     @Test
     public void searchContainAuthNameTest(){
@@ -185,5 +187,21 @@ class AdminAuthTest {
                 () -> assertTrue(adminAuthMenuRepository.findAllByAuthAuthSeqAndMenuUseYnOrderByMenuSortNumAsc(1L,'Y').stream().parallel().filter(item-> !item.getAuthMenuSeq().equals(4L)).findFirst().isPresent())
         );
 
+    }
+
+    @Test
+    @DisplayName("HQ-ADMIN 권한에 속한 사용자 추가")
+    public void saveAuthUsers(){
+        // given
+        Long authSeq = 9L;
+        Long[] userSeqs = {7L};
+
+        // when
+        settingAuthSub.saveAuthUsers(authSeq, userSeqs);
+
+        // then
+        assertAll(
+                () -> assertTrue(adminUserRepository.findById(userSeqs[0]).stream().filter(item -> item.getAuth().getAuthSeq().equals(9L)).findFirst().isPresent())
+        );
     }
 }

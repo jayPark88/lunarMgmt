@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.springframework.util.ObjectUtils;
 
 @SuperBuilder
 @Data
@@ -60,7 +61,7 @@ public class AdminUserDto extends AdminBaseDto implements ChangableToFromEntity<
     adminUserPwd = entity.getAdminUserPwd();
     dept = entity.getDept();
     position = entity.getPosition();
-    authSeq = entity.getAuth().getAuthSeq();
+    authSeq = ObjectUtils.isEmpty(entity.getAuth())?null:entity.getAuth().getAuthSeq();
     deleteYn = entity.getDeleteYn();
     useYn = entity.getUseYn();
     super.setCreateId(entity.getCreateId());

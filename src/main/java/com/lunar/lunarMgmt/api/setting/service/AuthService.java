@@ -42,4 +42,8 @@ public class AuthService {
     public void saveAuthMenu(List<AdminAuthMenuDto> authMenuDtos, AdminUserDto adminUserDto){
         settingAuthSub.saveAuthMenu(authMenuDtos, adminUserDto);
     }
+
+    public void saveAuthUsers(Long authSeq, Long[] userSeqList){
+        settingAuthSub.saveAuthUsers(authSeq, userSeqList);
+    }
 }

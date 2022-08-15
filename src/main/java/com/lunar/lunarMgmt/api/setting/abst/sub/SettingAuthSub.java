@@ -12,8 +12,10 @@ import com.lunar.lunarMgmt.common.jpa.entities.AdminUserEntity;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminAuthMenuRepository;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminAuthRepository;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminMenuRepository;
+import com.lunar.lunarMgmt.common.jpa.repository.AdminUserRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,8 +24,8 @@ import java.util.stream.Collectors;
 @Transactional
 public class SettingAuthSub extends SettingAuthAbstract {
 
-    public SettingAuthSub(AdminAuthRepository adminAuthRepository, AdminAuthMenuRepository adminAuthMenuRepository, AdminMenuRepository adminMenuRepository, AuthMenuUtil authMenuUtil) {
-        super(adminAuthRepository, adminAuthMenuRepository, adminMenuRepository, authMenuUtil);
+    public SettingAuthSub(AdminAuthRepository adminAuthRepository, AdminAuthMenuRepository adminAuthMenuRepository, AdminMenuRepository adminMenuRepository, AdminUserRepository adminUserRepository, AuthMenuUtil authMenuUtil) {
+        super(adminAuthRepository, adminAuthMenuRepository, adminMenuRepository, adminUserRepository, authMenuUtil);
     }
 
     @Override
@@ -91,5 +93,21 @@ public class SettingAuthSub extends SettingAuthAbstract {
             saveList.add(item.to());
         });
         adminAuthMenuRepository.saveAll(saveList);
+    }
+
+    @Override
+    public void saveAuthUsers(Long authSeq, Long[] userSeqs) {
+        for(int i=0; i<userSeqs.length; i++){
+            AdminUserEntity adminUserEntity = adminUserRepository.findById(userSeqs[i]).get();
+            if (adminUserEntity.getAuth() != null)
+                throw new RuntimeException(String.format(
+                        "[%s(%s)]는 이미 [%s] 권한을 가지고 있습니다.", adminUserEntity.getAdminUserId(), adminUserEntity.getAdminUserNm(),
+                        adminUserEntity.getAuth().getAuthNm()));
+
+            AdminUserDto adminUserDto = new AdminUserDto(adminUserEntity);
+            adminUserDto.setAuthSeq(authSeq);
+
+            adminUserRepository.save(adminUserDto.to());
+        }
     }
 }

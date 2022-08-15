@@ -8,6 +8,7 @@ import com.lunar.lunarMgmt.api.setting.util.AuthMenuUtil;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminAuthMenuRepository;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminAuthRepository;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminMenuRepository;
+import com.lunar.lunarMgmt.common.jpa.repository.AdminUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +20,7 @@ public abstract class SettingAuthAbstract {
     protected final AdminAuthRepository adminAuthRepository;
     protected final AdminAuthMenuRepository adminAuthMenuRepository;
     protected final AdminMenuRepository adminMenuRepository;
+    protected final AdminUserRepository adminUserRepository;
     protected final AuthMenuUtil authMenuUtil;
 
     // 권한 리스트 조회
@@ -41,5 +43,7 @@ public abstract class SettingAuthAbstract {
 
     // 권한 메뉴 등록
     public abstract void saveAuthMenu(List<AdminAuthMenuDto> authMenuDtos, AdminUserDto adminUserDto);
+    // 권한에 속한 사용자 추가
+    public abstract void saveAuthUsers(Long authSeq, Long[] userSeqs);
 
 }
