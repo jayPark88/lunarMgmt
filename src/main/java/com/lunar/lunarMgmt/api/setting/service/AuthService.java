@@ -2,6 +2,7 @@ package com.lunar.lunarMgmt.api.setting.service;
 
 import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.api.setting.abst.SettingAuthAbstract;
+import com.lunar.lunarMgmt.api.setting.model.AdminAuthMenuDto;
 import com.lunar.lunarMgmt.api.setting.model.AuthDto;
 import com.lunar.lunarMgmt.api.setting.model.VueMenuDto;
 import lombok.RequiredArgsConstructor;
@@ -36,5 +37,9 @@ public class AuthService {
 
     public List<VueMenuDto> selectMenuAuthMenutree(Long authSeq){
         return settingAuthSub.selectMenuAuthMenutree(authSeq);
+    }
+
+    public void saveAuthMenu(List<AdminAuthMenuDto> authMenuDtos, AdminUserDto adminUserDto){
+        settingAuthSub.saveAuthMenu(authMenuDtos, adminUserDto);
     }
 }

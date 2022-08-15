@@ -1,10 +1,12 @@
 package com.lunar.lunarMgmt.api.setting.controller;
 
 import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
+import com.lunar.lunarMgmt.api.setting.model.AdminAuthMenuDto;
 import com.lunar.lunarMgmt.api.setting.model.AuthDto;
 import com.lunar.lunarMgmt.api.setting.model.VueMenuDto;
 import com.lunar.lunarMgmt.api.setting.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -49,4 +51,10 @@ public class AuthController {
     public List<VueMenuDto> selectMenuAuthList(@PathVariable Long authSeq) {
         return authService.selectMenuAuthMenutree(authSeq);
     }
+
+    @PostMapping("/menus")
+    public void saveAuthMenu(@RequestBody List<AdminAuthMenuDto> authMenuDtos, @AuthenticationPrincipal AdminUserDto adminUserDto){
+        authService.saveAuthMenu(authMenuDtos, adminUserDto);
+    }
+
 }
