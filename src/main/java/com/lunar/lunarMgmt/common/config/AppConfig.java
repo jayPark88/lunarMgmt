@@ -6,6 +6,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @RequiredArgsConstructor
 public class AppConfig {
-    // 수동 빈 주입은 interface 타입 만 되는 것 같다. abstract는 안되네..
-    // 하나의 부모에 여러개의 sub를 한다면 어떻게 하나??
+    // 주로 복잡한 추상 클래스에서 사용하기 보다는
+    // 단순한 interface기반으로 구현체를 주입을 할때 사용을 하면 좋을 것 같다.
 }

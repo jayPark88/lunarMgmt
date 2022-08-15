@@ -6,6 +6,7 @@ import com.lunar.lunarMgmt.api.setting.model.VueMenuDto;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminAuthMenuRepository;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminMenuRepository;
 import com.lunar.lunarMgmt.common.jpa.repository.FileRepository;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +36,6 @@ public class MenuUtil extends SettingMenuAbstract {
 
     @Override
     public List<AdminMenuDto> selectMenuList() {
-        System.out.println("menuUtil");
         return adminMenuRepository.findAll(Sort.by(Sort.Direction.ASC, "sortNum")).stream()
                 .map((menuEntity) -> new AdminMenuDto(menuEntity)).collect(Collectors.toList());
     }
