@@ -2,6 +2,7 @@ package com.lunar.lunarMgmt.api.setting.abst;
 
 import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.api.setting.model.AuthDto;
+import com.lunar.lunarMgmt.api.setting.model.AdminAuthMenuDto;
 import com.lunar.lunarMgmt.api.setting.model.VueMenuDto;
 import com.lunar.lunarMgmt.api.setting.util.AuthMenuUtil;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminAuthMenuRepository;
@@ -37,5 +38,8 @@ public abstract class SettingAuthAbstract {
     
     // 해당 권한의 속한 메뉴 리스트 조회
     public abstract List<VueMenuDto> selectMenuAuthMenutree(Long authSeq);
+
+    // 권한 메뉴 등록
+    public abstract void saveAuthMenu(List<AdminAuthMenuDto> authMenuDtos, AdminUserDto adminUserDto);
 
 }

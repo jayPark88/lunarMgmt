@@ -3,9 +3,11 @@ package com.lunar.lunarMgmt.api;
 import com.lunar.lunarMgmt.LunarMgmtApplication;
 import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.api.setting.abst.SettingAuthAbstract;
+import com.lunar.lunarMgmt.api.setting.model.AdminAuthMenuDto;
 import com.lunar.lunarMgmt.api.setting.model.AuthDto;
 import com.lunar.lunarMgmt.api.setting.model.VueMenuDto;
 import com.lunar.lunarMgmt.common.jpa.entities.AdminAuthEntity;
+import com.lunar.lunarMgmt.common.jpa.repository.AdminAuthMenuRepository;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminAuthRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,9 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,6 +30,8 @@ class AdminAuthTest {
     private AdminAuthRepository adminAuthRepository;
     @Autowired
     private SettingAuthAbstract settingAuthSub;
+    @Autowired
+    private AdminAuthMenuRepository adminAuthMenuRepository;
 
     @Test
     public void searchContainAuthNameTest(){
@@ -158,6 +164,25 @@ class AdminAuthTest {
         // when
         assertAll(
                 ()-> assertTrue(vueMenuDtos.size()>0)
+        );
+    }
+
+    @Test
+    @DisplayName("HQ-ADMIN 권한 메뉴 등록")
+    public void saveAuthMenu(){
+        // given
+        List<AdminAuthMenuDto>adminUserDtos =
+                adminAuthMenuRepository.findAllByAuthAuthSeqAndMenuUseYnOrderByMenuSortNumAsc(1L, 'Y').stream().map(AdminAuthMenuDto::new).collect(Collectors.toList());
+        AdminUserDto adminUserDto = new AdminUserDto(settingAuthSub.selectAuthUserList(1L).stream().filter(item -> item.getAdminUserId().equals("jayParkSub")).findFirst().get().to());
+
+        // when
+        // 예상 시나리오는 adminUserDtos는 4번을 제외한 1~3번까지만 존재하고 as-is의 4번을 제외하고 3번까지만 데이터 수정되는 부분을 할 예정이다.
+        settingAuthSub.saveAuthMenu(adminUserDtos.stream().filter(item -> !item.getAuthMenuSeq().equals(4L)).collect(Collectors.toList()), adminUserDto);
+
+        // then
+        assertAll(
+                () -> assertTrue(adminAuthMenuRepository.findAllByAuthAuthSeqAndMenuUseYnOrderByMenuSortNumAsc(1L,'Y').stream().filter(item -> item.getCreateId().equals("jayParkSub")).findFirst().isPresent()),
+                () -> assertTrue(adminAuthMenuRepository.findAllByAuthAuthSeqAndMenuUseYnOrderByMenuSortNumAsc(1L,'Y').stream().parallel().filter(item-> !item.getAuthMenuSeq().equals(4L)).findFirst().isPresent())
         );
 
     }

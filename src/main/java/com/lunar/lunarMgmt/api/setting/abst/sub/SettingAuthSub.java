@@ -3,9 +3,11 @@ package com.lunar.lunarMgmt.api.setting.abst.sub;
 import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.api.setting.abst.SettingAuthAbstract;
 import com.lunar.lunarMgmt.api.setting.model.AuthDto;
+import com.lunar.lunarMgmt.api.setting.model.AdminAuthMenuDto;
 import com.lunar.lunarMgmt.api.setting.model.VueMenuDto;
 import com.lunar.lunarMgmt.api.setting.util.AuthMenuUtil;
 import com.lunar.lunarMgmt.common.jpa.entities.AdminAuthEntity;
+import com.lunar.lunarMgmt.common.jpa.entities.AdminAuthMenuEntity;
 import com.lunar.lunarMgmt.common.jpa.entities.AdminUserEntity;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminAuthMenuRepository;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminAuthRepository;
@@ -68,5 +70,26 @@ public class SettingAuthSub extends SettingAuthAbstract {
                 menus.stream().filter((m) -> m.getData().getParentMenuId() == 0)
                         .collect(Collectors.toList()),
                 menus);
+    }
+
+    @Override
+    public void saveAuthMenu(List<AdminAuthMenuDto> adminAuthMenuDtos, AdminUserDto adminUserDto) {
+        List<AdminAuthMenuEntity> saveList = new ArrayList<AdminAuthMenuEntity>();
+        Long authSeq = adminAuthMenuDtos.get(0).getAuthSeq();
+
+        // 전부 다 삭제 처리 하고 다시 추가를 한다.
+        adminAuthMenuRepository.deleteByAuthAuthSeq(authSeq);
+        // flush 해도 transactional
+        adminAuthMenuRepository.flush();
+
+        // stream 병렬 처리로 item element를 가지오 와서 화면에서 선택한 권한의 authSeq와
+        // 수정한 adminLogin정보를 set하여 saveList에 add를 하여 다시 저장을 한다.
+        // 다시 삭제하고 다시 저장하는게 제일 비용적으로 저렴한것 같다.
+        adminAuthMenuDtos.stream().parallel().forEach(item -> {
+            item.setAuthSeq(authSeq);
+            item.setCreateInfo(adminUserDto);
+            saveList.add(item.to());
+        });
+        adminAuthMenuRepository.saveAll(saveList);
     }
 }

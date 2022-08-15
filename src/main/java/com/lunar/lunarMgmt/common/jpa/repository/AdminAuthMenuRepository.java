@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface AdminAuthMenuRepository extends JpaRepository<AdminAuthMenuEntity, Long> {
     List<AdminAuthMenuEntity> findAllByAuthAuthSeqAndMenuUseYnOrderByMenuSortNumAsc(Long authSeq, Character useYn);
+    void deleteByAuthAuthSeq(Long authSeq);
 }
