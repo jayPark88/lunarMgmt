@@ -110,4 +110,15 @@ public class SettingAuthSub extends SettingAuthAbstract {
             adminUserRepository.save(adminUserDto.to());
         }
     }
+
+    @Override
+    public void deleteAuthUsers(Long authSeq, Long[] userSeqs) {
+        for (int i = 0; i < userSeqs.length; i++) {
+            AdminUserEntity adminUserEntity = adminUserRepository.findById(userSeqs[i]).get();
+            AdminUserDto adminUserDto = new AdminUserDto(adminUserEntity);
+            adminUserDto.setAuthSeq(null);
+
+            adminUserRepository.save(adminUserDto.to());
+        }
+    }
 }

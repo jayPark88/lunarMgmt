@@ -14,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -202,6 +203,22 @@ class AdminAuthTest {
         // then
         assertAll(
                 () -> assertTrue(adminUserRepository.findById(userSeqs[0]).stream().filter(item -> item.getAuth().getAuthSeq().equals(9L)).findFirst().isPresent())
+        );
+    }
+
+    @Test
+    @DisplayName("HQ-ADMIN 권한에 속한 사용자 삭제")
+    public void deleteAuthUsers(){
+        // given
+        Long authSeq = 9L;
+        Long[] userSeqs = {7L};
+
+        // when
+        settingAuthSub.deleteAuthUsers(authSeq, userSeqs);
+
+        // then
+        assertAll(
+                () -> assertTrue(ObjectUtils.isEmpty(adminUserRepository.findById(userSeqs[0]).get().getAuth()))
         );
     }
 }

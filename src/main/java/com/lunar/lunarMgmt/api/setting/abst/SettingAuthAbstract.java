@@ -46,4 +46,6 @@ public abstract class SettingAuthAbstract {
     // 권한에 속한 사용자 추가
     public abstract void saveAuthUsers(Long authSeq, Long[] userSeqs);
 
+    // 권한에 속한 사용자 삭제
+    public abstract void deleteAuthUsers(Long authSeq, Long[] userSeqs);
 }
