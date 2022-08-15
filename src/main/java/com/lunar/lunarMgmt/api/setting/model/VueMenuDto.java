@@ -13,7 +13,7 @@ public class VueMenuDto {
 
     private String title;
     private int level;
-    private MenuDto data;
+    private AdminMenuDto data;
     private List<VueMenuDto> children;
 
     public VueMenuDto() {
@@ -22,7 +22,7 @@ public class VueMenuDto {
 
     public VueMenuDto(AdminMenuEntity entity) {
         this();
-        data = new MenuDto(entity);
+        data = new AdminMenuDto(entity);
         title = data.getMenuNm();
         level = data.getMenuLevel();
 

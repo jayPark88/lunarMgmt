@@ -17,7 +17,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper=false)
 @Data
 @AllArgsConstructor
-public class MenuDto extends AdminBaseDto implements ChangableToFromEntity<AdminMenuEntity> {
+public class AdminMenuDto extends AdminBaseDto implements ChangableToFromEntity<AdminMenuEntity> {
     private Long menuSeq;
     private String menuNm;
     private String pageUrl;
@@ -32,7 +32,7 @@ public class MenuDto extends AdminBaseDto implements ChangableToFromEntity<Admin
     private Long offImageFileSeq;
     private String offImageUrl;
     @Builder.Default // 기본값 설정을 위한 어노테이션이다. 값을 설정하면 된다. 아래는 Collection List로 초기화를 해주는 것임.
-    private List<MenuDto> children = new ArrayList<>();
+    private List<AdminMenuDto> children = new ArrayList<>();
     private Character readYn;
     private Character writeYn;
 
@@ -40,16 +40,16 @@ public class MenuDto extends AdminBaseDto implements ChangableToFromEntity<Admin
     @Builder.Default
     private boolean active = false;
 
-    public MenuDto() {
+    public AdminMenuDto() {
         children = new ArrayList<>();
     }
 
-    public MenuDto(AdminMenuEntity entity) {
+    public AdminMenuDto(AdminMenuEntity entity) {
         this();
         from(entity);
     }
 
-    public MenuDto(AdminAuthMenuEntity entity) {
+    public AdminMenuDto(AdminAuthMenuEntity entity) {
         this();
         from(entity.getMenu());
         readYn = entity.getReadYn();
