@@ -62,4 +62,9 @@ public class AuthController {
         authService.saveAuthUsers(authSeq, userSeqList);
     }
 
+    @DeleteMapping(value = "/users/{authSeq}")
+    public void deleteAuthUsers(@PathVariable Long authSeq, @RequestBody Long[] userSeqList) {
+        authService.deleteAuthUsers(authSeq, userSeqList);
+    }
+
 }

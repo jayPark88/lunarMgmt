@@ -46,4 +46,8 @@ public class AuthService {
     public void saveAuthUsers(Long authSeq, Long[] userSeqList){
         settingAuthSub.saveAuthUsers(authSeq, userSeqList);
     }
+
+    public void deleteAuthUsers(Long authSeq, Long[] userSeqList){
+        settingAuthSub.deleteAuthUsers(authSeq, userSeqList);
+    }
 }
