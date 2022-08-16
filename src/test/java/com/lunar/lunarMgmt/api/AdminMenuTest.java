@@ -1,6 +1,8 @@
 package com.lunar.lunarMgmt.api;
 
 import com.lunar.lunarMgmt.LunarMgmtApplication;
+import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
+import com.lunar.lunarMgmt.api.setting.abst.SettingAuthAbstract;
 import com.lunar.lunarMgmt.api.setting.abst.SettingMenuAbstract;
 import com.lunar.lunarMgmt.api.setting.model.AdminMenuDto;
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +19,8 @@ public class AdminMenuTest {
 
     @Autowired
     SettingMenuAbstract settingMenuAbstract;
+    @Autowired
+    SettingAuthAbstract settingAuthAbstract;
     
     @Test
     @DisplayName("권한 없이 모든 메뉴 조회 테스트")
@@ -33,6 +37,24 @@ public class AdminMenuTest {
         assertAll(
                 () -> assertTrue(adminMenuDtos.size()>0)
         );
+
+    }
+
+    @Test
+    @DisplayName("메뉴 트리 조회")
+    public void selectMenuTree(){
+        // given
+        Long authSeq = 1L;
+        List<AdminUserDto> adminUserDtos = settingAuthAbstract.selectAuthUserList(authSeq);
+
+        // when
+        List<AdminMenuDto> adminMenuDtos = settingMenuAbstract.selectMenuTree(adminUserDtos.get(0));
+        adminMenuDtos.removeIf((menuDto) -> menuDto.getPageUrl().equals("/")); // 메인화면 이 있으면 그건 NavigationMenu에서 제거
+        // then
+        assertAll(
+                () -> assertTrue(adminMenuDtos.size() >0)
+        );
+
 
     }
 }

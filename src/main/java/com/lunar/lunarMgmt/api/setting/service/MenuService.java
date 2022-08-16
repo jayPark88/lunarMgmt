@@ -1,5 +1,6 @@
 package com.lunar.lunarMgmt.api.setting.service;
 
+import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.api.setting.abst.SettingMenuAbstract;
 import com.lunar.lunarMgmt.api.setting.model.AdminMenuDto;
 import lombok.RequiredArgsConstructor;
@@ -13,5 +14,9 @@ public class MenuService {
     private final SettingMenuAbstract settingMenuAbstract;
     public List<AdminMenuDto> selectMenuList(){
         return settingMenuAbstract.selectMenuList();
+    }
+
+    public List<AdminMenuDto> selectMenuTree(AdminUserDto adminUserDto){
+        return settingMenuAbstract.selectMenuTree(adminUserDto);
     }
 }
