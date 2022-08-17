@@ -24,4 +24,8 @@ public class MenuService {
     public List<VueMenuDto> selectVueMenuTree(){
         return settingMenuAbstract.selectVueMenuTree();
     }
+
+    public AdminMenuDto selectMenu(Long menuSeq) throws Exception {
+        return settingMenuAbstract.selectMenu(menuSeq);
+    }
 }
