@@ -2,6 +2,7 @@ package com.lunar.lunarMgmt.api.setting.controller;
 
 import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.api.setting.model.AdminMenuDto;
+import com.lunar.lunarMgmt.api.setting.model.VueMenuDto;
 import com.lunar.lunarMgmt.api.setting.service.MenuService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -28,4 +29,10 @@ public class MenuController {
         menuTree.removeIf((menuDto) -> menuDto.getPageUrl().equals("/")); // 메인화면 이 있으면 그건 NavigationMenu에서 제거
         return menuTree;
     }
+
+    @GetMapping("/vuetree")
+    public List<VueMenuDto> selectVueMenuTree() {
+        return menuService.selectVueMenuTree();
+    }
+
 }

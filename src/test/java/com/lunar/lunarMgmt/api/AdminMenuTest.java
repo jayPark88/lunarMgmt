@@ -5,6 +5,7 @@ import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.api.setting.abst.SettingAuthAbstract;
 import com.lunar.lunarMgmt.api.setting.abst.SettingMenuAbstract;
 import com.lunar.lunarMgmt.api.setting.model.AdminMenuDto;
+import com.lunar.lunarMgmt.api.setting.model.VueMenuDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class AdminMenuTest {
     SettingMenuAbstract settingMenuAbstract;
     @Autowired
     SettingAuthAbstract settingAuthAbstract;
-    
+
     @Test
     @DisplayName("권한 없이 모든 메뉴 조회 테스트")
     public void selectMenuList(){
@@ -54,7 +55,20 @@ public class AdminMenuTest {
         assertAll(
                 () -> assertTrue(adminMenuDtos.size() >0)
         );
+    }
 
+    @Test
+    @DisplayName("vue메뉴 트리 조회")
+    public void selectVueMenuTree(){
+        // given 없음
+
+        // when
+        List<VueMenuDto> vueMenuDtos = settingMenuAbstract.selectVueMenuTree();
+
+        // when
+        assertAll(
+                () -> assertTrue(vueMenuDtos.size() > 0)
+        );
 
     }
 }

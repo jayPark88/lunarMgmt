@@ -1,7 +1,7 @@
 package com.lunar.lunarMgmt.api;
 
 import com.lunar.lunarMgmt.api.setting.abst.SettingMenuAbstract;
-import com.lunar.lunarMgmt.api.setting.util.MenuUtil;
+import com.lunar.lunarMgmt.api.setting.abst.sub.SettingMenuSub;
 import com.lunar.lunarMgmt.common.config.AppConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +16,6 @@ public class BeanTest {
     @DisplayName("빈 이름으로 조회")
     void findBeanByName(){
         SettingMenuAbstract settingMenuAbstract =ac.getBean("menuUtil", SettingMenuAbstract.class);
-        Assertions.assertThat(settingMenuAbstract).isInstanceOf(MenuUtil.class);
+        Assertions.assertThat(settingMenuAbstract).isInstanceOf(SettingMenuSub.class);
     }
 }

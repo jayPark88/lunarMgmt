@@ -1,5 +1,6 @@
 package com.lunar.lunarMgmt.api.setting.util;
 
+import com.lunar.lunarMgmt.api.setting.abst.sub.SettingMenuSub;
 import com.lunar.lunarMgmt.api.setting.model.VueMenuDto;
 import com.lunar.lunarMgmt.common.jpa.entities.AdminAuthMenuEntity;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminAuthMenuRepository;
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
 public class AuthMenuUtil {
     private final AdminAuthMenuRepository adminAuthMenuRepository;
     private final AdminMenuRepository adminMenuRepository;
-    private final MenuUtil menuUtil;
+    private final SettingMenuSub settingMenuSub;
 
     // 권한 메뉴에서 권한에 등록할 메뉴 리스트 가져오기
     public List<VueMenuDto> selectAuthVueMenuList(Long authSeq){
@@ -38,7 +39,7 @@ public class AuthMenuUtil {
         // VueMenuList에 readYn, writeYn 담기, 없으면 null,
         // 최종적으로는 menuEntity에 있는 구조로 화면에 출력을 해야 하기에 메뉴를 한번 더 조회 후 adminAuth에 있는 정보와 매핑하여 가공을 하는 것이다.
         // 현재 adminMenu에 있는 사용자 유무를 통한 데이터를 그대로 new VueMenuDto(item))생성자를 통해서 data를 mapping을 한다.
-        List<VueMenuDto> allVueMenus = menuUtil.selectVueMenuList('Y');
+        List<VueMenuDto> allVueMenus = settingMenuSub.selectVueMenuList('Y');
 
         allVueMenus.forEach((item) -> {
             // adminAuthMenuEntity에 item의 menuSeq와 설정>메뉴의 리스트의 menuSeq와 일치하는 정보를 가지고 와서 setting을 해줌.

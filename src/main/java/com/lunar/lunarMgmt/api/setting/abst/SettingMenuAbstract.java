@@ -2,6 +2,7 @@ package com.lunar.lunarMgmt.api.setting.abst;
 
 import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.api.setting.model.AdminMenuDto;
+import com.lunar.lunarMgmt.api.setting.model.VueMenuDto;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminAuthMenuRepository;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminMenuRepository;
 import com.lunar.lunarMgmt.common.jpa.repository.FileRepository;
@@ -25,4 +26,7 @@ public abstract class SettingMenuAbstract {
 
     // 권한으로 Menu 가져오기 + 읽기, 쓰기 권한
     public abstract List<AdminMenuDto> selectMenuList(AdminUserDto adminUserDto);
+
+    // Vue 메뉴 트리 조회
+    public abstract List<VueMenuDto> selectVueMenuTree();
 }

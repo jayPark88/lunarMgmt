@@ -1,4 +1,4 @@
-package com.lunar.lunarMgmt.api.setting.util;
+package com.lunar.lunarMgmt.api.setting.abst.sub;
 
 import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.api.setting.abst.SettingMenuAbstract;
@@ -7,7 +7,6 @@ import com.lunar.lunarMgmt.api.setting.model.VueMenuDto;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminAuthMenuRepository;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminMenuRepository;
 import com.lunar.lunarMgmt.common.jpa.repository.FileRepository;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,8 +17,8 @@ import java.util.stream.Collectors;
 
 @Component
 @Transactional
-public class MenuUtil extends SettingMenuAbstract {
-    public MenuUtil(AdminMenuRepository adminMenuRepository, AdminAuthMenuRepository adminAuthMenuRepository, FileRepository fileRepository) {
+public class SettingMenuSub extends SettingMenuAbstract {
+    public SettingMenuSub(AdminMenuRepository adminMenuRepository, AdminAuthMenuRepository adminAuthMenuRepository, FileRepository fileRepository) {
         super(adminMenuRepository, adminAuthMenuRepository, fileRepository);
     }
 
@@ -56,6 +55,16 @@ public class MenuUtil extends SettingMenuAbstract {
                 .map((ame) -> new AdminMenuDto(ame)).collect(Collectors.toList());
     }
 
+    @Override
+    public List<VueMenuDto> selectVueMenuTree() {
+        List<VueMenuDto> menus = selectVueMenuList(null);
+        // 시작은 최상위 부모, 부모아이디가 자신인 메뉴들 ( parentmenuId == menuId ), 모든 메뉴들
+        return createVueMenuTree(
+                menus.stream().filter((m) -> m.getData().getParentMenuId() == 0)
+                        .collect(Collectors.toList()),
+                menus);
+    }
+
     // 부모 메뉴 아이디로 이루어진 list와 authSeq로 이루어진 부모, 자식 구별없는 list으로 최종 메뉴 트리 생성 method
     private List<AdminMenuDto> createMenuTree(List<AdminMenuDto> adminMenuDtos, List<AdminMenuDto> allMenus) {
         // 부모 menuList Loop문을 돌려서
@@ -80,5 +89,25 @@ public class MenuUtil extends SettingMenuAbstract {
         }
 
         return adminMenuDtos;
+    }
+
+    // VueMenu Tree 만들기
+    private List<VueMenuDto> createVueMenuTree(List<VueMenuDto> menus, List<VueMenuDto> allMenus) {
+        for (int i = 0; i < menus.size(); i++) {
+            VueMenuDto vueMenuDto = menus.get(i);
+
+            List<VueMenuDto> children = allMenus.stream()
+                    .filter((m) -> m.getData().getParentMenuId() != 0
+                            && m.getData().getParentMenuId() == vueMenuDto.getData().getMenuSeq())
+                    .collect(Collectors.toList());
+
+            if (children.size() > 0) {
+                vueMenuDto.setChildren(children);
+            } else {
+                vueMenuDto.setChildren(new ArrayList<>());
+            }
+        }
+
+        return menus;
     }
 }
