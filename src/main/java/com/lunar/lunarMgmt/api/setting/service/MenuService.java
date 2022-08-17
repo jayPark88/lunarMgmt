@@ -28,4 +28,8 @@ public class MenuService {
     public AdminMenuDto selectMenu(Long menuSeq) throws Exception {
         return settingMenuAbstract.selectMenu(menuSeq);
     }
+
+    public void saveMenu(AdminMenuDto adminMenuDto){
+        settingMenuAbstract.saveMenu(adminMenuDto);
+    }
 }

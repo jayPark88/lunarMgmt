@@ -93,9 +93,12 @@ public class SettingMenuSub extends SettingMenuAbstract {
                 throw new RuntimeException(String.format("%s 권한에서 사용중이므로\n 사용 여부를 변경하실 수 없습니다.", String.join(",", authNmList)));
             }
         }
-        AdminMenuEntity savedEntity = adminMenuRepository.saveAndFlush(adminMenuDto.to());
+        
+        // 저장 결과를 savedEntity에 담아서
+        AdminMenuEntity savedEntity = adminMenuRepository.save(adminMenuDto.to());
 
-        // topMenuId update
+        // topMenuId update 해당 분기문은 부모 메뉴 최초 등록 시에만 해당되어 알고리즘이 실행된다.
+        // topMenuId를 menuSeq아이디로 set을 해주기 위한.
         if (savedEntity.getParentMenuId() == 0 && savedEntity.getTopMenuId() == 0) {
             savedEntity.updateTopMenuId(savedEntity.getMenuSeq());
             adminMenuRepository.save(savedEntity);

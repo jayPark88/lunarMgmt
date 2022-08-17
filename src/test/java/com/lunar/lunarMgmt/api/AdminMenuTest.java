@@ -6,6 +6,7 @@ import com.lunar.lunarMgmt.api.setting.abst.SettingAuthAbstract;
 import com.lunar.lunarMgmt.api.setting.abst.SettingMenuAbstract;
 import com.lunar.lunarMgmt.api.setting.model.AdminMenuDto;
 import com.lunar.lunarMgmt.api.setting.model.VueMenuDto;
+import com.lunar.lunarMgmt.common.jpa.entities.AdminMenuEntity;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminMenuRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -114,5 +115,20 @@ public class AdminMenuTest {
         );
     }
 
+    @Test
+    @DisplayName("메뉴 정보 수정")
+    public void updateMenu(){
+        // given
+        AdminMenuDto adminMenuDto = new AdminMenuDto(adminMenuRepository.findById(5L).get());
+        adminMenuDto.setMenuNm("시스템 관리");
 
+        // when
+        AdminMenuEntity adminMenuEntity = adminMenuRepository.save(adminMenuDto.to());
+
+        // then
+        assertAll(
+                () -> assertTrue(adminMenuEntity.getMenuNm().equals("시스템 관리"))
+        );
+    }
+    
 }

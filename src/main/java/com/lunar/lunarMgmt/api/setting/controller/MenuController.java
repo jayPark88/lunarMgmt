@@ -6,10 +6,7 @@ import com.lunar.lunarMgmt.api.setting.model.VueMenuDto;
 import com.lunar.lunarMgmt.api.setting.service.MenuService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,15 +27,20 @@ public class MenuController {
         menuTree.removeIf((menuDto) -> menuDto.getPageUrl().equals("/")); // 메인화면 이 있으면 그건 NavigationMenu에서 제거
         return menuTree;
     }
-
     @GetMapping("/vuetree")
     public List<VueMenuDto> selectVueMenuTree() {
         return menuService.selectVueMenuTree();
     }
-
     @GetMapping(value = "/{menuSeq}")
     public AdminMenuDto selectMenu(@PathVariable Long menuSeq) throws Exception {
         return menuService.selectMenu(menuSeq);
     }
-
+    @PostMapping
+    public void saveMenu(@RequestBody AdminMenuDto adminMenuDto) {
+        menuService.saveMenu(adminMenuDto);
+    }
+    @PutMapping
+    public void updateMenu(@RequestBody AdminMenuDto adminMenuDto) {
+        menuService.saveMenu(adminMenuDto);
+    }
 }
