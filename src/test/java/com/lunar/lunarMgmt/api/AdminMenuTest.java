@@ -6,6 +6,7 @@ import com.lunar.lunarMgmt.api.setting.abst.SettingAuthAbstract;
 import com.lunar.lunarMgmt.api.setting.abst.SettingMenuAbstract;
 import com.lunar.lunarMgmt.api.setting.model.AdminMenuDto;
 import com.lunar.lunarMgmt.api.setting.model.VueMenuDto;
+import com.lunar.lunarMgmt.common.jpa.repository.AdminMenuRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,8 @@ public class AdminMenuTest {
     SettingMenuAbstract settingMenuAbstract;
     @Autowired
     SettingAuthAbstract settingAuthAbstract;
+    @Autowired
+    AdminMenuRepository adminMenuRepository;
 
     @Test
     @DisplayName("권한 없이 모든 메뉴 조회 테스트")
@@ -56,7 +59,6 @@ public class AdminMenuTest {
                 () -> assertTrue(adminMenuDtos.size() >0)
         );
     }
-
     @Test
     @DisplayName("vue메뉴 트리 조회")
     public void selectVueMenuTree(){
@@ -68,6 +70,21 @@ public class AdminMenuTest {
         // when
         assertAll(
                 () -> assertTrue(vueMenuDtos.size() > 0)
+        );
+    }
+
+    @Test
+    @DisplayName("메뉴 정보 조회")
+    public void selectMenu() throws Exception {
+        // given
+        Long menuSeq = 1L;
+
+        // when
+        AdminMenuDto adminMenuDto = settingMenuAbstract.selectMenu(menuSeq);
+
+        //then
+        assertAll(
+                () -> assertTrue(adminMenuDto.getMenuNm().equals(adminMenuRepository.findById(1L).get().getMenuNm()))
         );
 
     }

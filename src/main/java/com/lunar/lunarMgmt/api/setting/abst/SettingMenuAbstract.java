@@ -29,4 +29,7 @@ public abstract class SettingMenuAbstract {
 
     // Vue 메뉴 트리 조회
     public abstract List<VueMenuDto> selectVueMenuTree();
+
+    // 메뉴 정보 조회(단일 조회)
+    public abstract AdminMenuDto selectMenu(Long menuSeq) throws Exception;
 }
