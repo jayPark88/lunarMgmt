@@ -32,4 +32,7 @@ public abstract class SettingMenuAbstract {
 
     // 메뉴 정보 조회(단일 조회)
     public abstract AdminMenuDto selectMenu(Long menuSeq) throws Exception;
+
+    // 메뉴 정보 저장
+    public abstract void saveMenu(AdminMenuDto adminMenuDto);
 }

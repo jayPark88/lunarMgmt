@@ -4,6 +4,7 @@ import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.api.setting.abst.SettingMenuAbstract;
 import com.lunar.lunarMgmt.api.setting.model.AdminMenuDto;
 import com.lunar.lunarMgmt.api.setting.model.VueMenuDto;
+import com.lunar.lunarMgmt.common.jpa.entities.AdminAuthMenuEntity;
 import com.lunar.lunarMgmt.common.jpa.entities.AdminMenuEntity;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminAuthMenuRepository;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminMenuRepository;
@@ -71,10 +72,33 @@ public class SettingMenuSub extends SettingMenuAbstract {
     @Override
     public AdminMenuDto selectMenu(Long menuSeq) throws Exception {
         Optional<AdminMenuEntity> optionalAdminMenuEntity = adminMenuRepository.findById(menuSeq);
-        if(optionalAdminMenuEntity.isPresent()){
+        if (optionalAdminMenuEntity.isPresent()) {
             return new AdminMenuDto(optionalAdminMenuEntity.get());
-        }else{
+        } else {
             throw new Exception("메뉴를 찾지 못했습니다.");
+        }
+    }
+
+    @Override
+    public void saveMenu(AdminMenuDto adminMenuDto) {
+        // update 일 경우
+        if (!Objects.isNull(adminMenuDto.getMenuSeq()) && adminMenuDto.getUseYn().equals('N')) {
+            // update일 경우 사용여부 'N' 이면 권한에 연결되어있는지 확인부터 해야한다.
+            // 권한에 연결되어 있을 경우 사용 중 이므로 변경 하면 안된다.
+            List<AdminAuthMenuEntity> usedAuthMenuList = adminAuthMenuRepository.findAllByMenuMenuSeq(adminMenuDto.getMenuSeq());
+
+            if (usedAuthMenuList.size() > 0) {
+                List<String> authNmList = usedAuthMenuList.stream()
+                        .map((authMenu) -> String.format("[%s]", authMenu.getAuth().getAuthNm())).collect(Collectors.toList());
+                throw new RuntimeException(String.format("%s 권한에서 사용중이므로\n 사용 여부를 변경하실 수 없습니다.", String.join(",", authNmList)));
+            }
+        }
+        AdminMenuEntity savedEntity = adminMenuRepository.saveAndFlush(adminMenuDto.to());
+
+        // topMenuId update
+        if (savedEntity.getParentMenuId() == 0 && savedEntity.getTopMenuId() == 0) {
+            savedEntity.updateTopMenuId(savedEntity.getMenuSeq());
+            adminMenuRepository.save(savedEntity);
         }
     }
 

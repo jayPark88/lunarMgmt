@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
 import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper=false)
 @Data
 @AllArgsConstructor
+@SuperBuilder
 public class AdminMenuDto extends AdminBaseDto implements ChangableToFromEntity<AdminMenuEntity> {
     private Long menuSeq;
     private String menuNm;

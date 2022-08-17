@@ -28,25 +28,25 @@ public class AdminMenuTest {
 
     @Test
     @DisplayName("권한 없이 모든 메뉴 조회 테스트")
-    public void selectMenuList(){
+    public void selectMenuList() {
         // given 해당 테스트는 조건이 없다.
 
         // when
         List<AdminMenuDto> adminMenuDtos = settingMenuAbstract.selectMenuList();
-        adminMenuDtos.stream().parallel().forEach(item ->{
+        adminMenuDtos.stream().parallel().forEach(item -> {
             System.out.println(item);
         });
 
         // then
         assertAll(
-                () -> assertTrue(adminMenuDtos.size()>0)
+                () -> assertTrue(adminMenuDtos.size() > 0)
         );
 
     }
 
     @Test
     @DisplayName("메뉴 트리 조회")
-    public void selectMenuTree(){
+    public void selectMenuTree() {
         // given
         Long authSeq = 1L;
         List<AdminUserDto> adminUserDtos = settingAuthAbstract.selectAuthUserList(authSeq);
@@ -56,12 +56,13 @@ public class AdminMenuTest {
         adminMenuDtos.removeIf((menuDto) -> menuDto.getPageUrl().equals("/")); // 메인화면 이 있으면 그건 NavigationMenu에서 제거
         // then
         assertAll(
-                () -> assertTrue(adminMenuDtos.size() >0)
+                () -> assertTrue(adminMenuDtos.size() > 0)
         );
     }
+
     @Test
     @DisplayName("vue메뉴 트리 조회")
-    public void selectVueMenuTree(){
+    public void selectVueMenuTree() {
         // given 없음
 
         // when
@@ -86,6 +87,32 @@ public class AdminMenuTest {
         assertAll(
                 () -> assertTrue(adminMenuDto.getMenuNm().equals(adminMenuRepository.findById(1L).get().getMenuNm()))
         );
-
     }
+
+    @Test
+    @DisplayName("메뉴 정보 저장")
+    public void saveMenu(){
+        // given
+        AdminMenuDto adminMenuDto = AdminMenuDto.builder()
+                .menuNm("시스템 관리")
+                .pageUrl("/system")
+                .menuLevel(1)
+                .parentMenuId(0L)
+                .topMenuId(0L)
+                .menuDesc("시스템 관리")
+                .useYn('Y')
+                .sortNum(5)
+                .readYn('N')
+                .writeYn('N').build();
+
+        // when
+        settingMenuAbstract.saveMenu(adminMenuDto);
+
+        // then
+        assertAll(
+                () -> assertTrue(adminMenuRepository.findAll().stream().parallel().filter(item -> item.getMenuNm().equals("시스템 관리")).findFirst().isPresent())
+        );
+    }
+
+
 }
