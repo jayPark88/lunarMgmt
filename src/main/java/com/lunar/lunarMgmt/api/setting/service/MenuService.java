@@ -6,7 +6,9 @@ import com.lunar.lunarMgmt.api.setting.model.AdminMenuDto;
 import com.lunar.lunarMgmt.api.setting.model.VueMenuDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -31,5 +33,9 @@ public class MenuService {
 
     public void saveMenu(AdminMenuDto adminMenuDto){
         settingMenuAbstract.saveMenu(adminMenuDto);
+    }
+
+    public void uploadMenuImage(Long menuSeq, MultipartFile file, String onOff) throws IOException {
+        settingMenuAbstract.uploadMenuImage(menuSeq, file, onOff);
     }
 }

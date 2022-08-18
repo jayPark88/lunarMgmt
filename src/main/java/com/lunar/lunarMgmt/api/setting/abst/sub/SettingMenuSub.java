@@ -4,15 +4,23 @@ import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.api.setting.abst.SettingMenuAbstract;
 import com.lunar.lunarMgmt.api.setting.model.AdminMenuDto;
 import com.lunar.lunarMgmt.api.setting.model.VueMenuDto;
+import com.lunar.lunarMgmt.api.setting.util.MenuFileUtil;
+import com.lunar.lunarMgmt.common.config.yml.MenuFileConfig;
+import com.lunar.lunarMgmt.common.intf.FileUtil;
 import com.lunar.lunarMgmt.common.jpa.entities.AdminAuthMenuEntity;
 import com.lunar.lunarMgmt.common.jpa.entities.AdminMenuEntity;
+import com.lunar.lunarMgmt.common.jpa.entities.FileEntity;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminAuthMenuRepository;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminMenuRepository;
 import com.lunar.lunarMgmt.common.jpa.repository.FileRepository;
+import com.lunar.lunarMgmt.common.model.FileDto;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -22,8 +30,9 @@ import java.util.stream.Collectors;
 @Component
 @Transactional
 public class SettingMenuSub extends SettingMenuAbstract {
-    public SettingMenuSub(AdminMenuRepository adminMenuRepository, AdminAuthMenuRepository adminAuthMenuRepository, FileRepository fileRepository) {
-        super(adminMenuRepository, adminAuthMenuRepository, fileRepository);
+
+    public SettingMenuSub(AdminMenuRepository adminMenuRepository, AdminAuthMenuRepository adminAuthMenuRepository, FileRepository fileRepository, MenuFileConfig menuFileConfig, FileUtil fileUtil) {
+        super(adminMenuRepository, adminAuthMenuRepository, fileRepository, menuFileConfig, fileUtil);
     }
 
     // 메뉴화면에서 메뉴를 수정,등록,삭제 하기 위한 VueMenu 리스트 가져오기
@@ -93,7 +102,7 @@ public class SettingMenuSub extends SettingMenuAbstract {
                 throw new RuntimeException(String.format("%s 권한에서 사용중이므로\n 사용 여부를 변경하실 수 없습니다.", String.join(",", authNmList)));
             }
         }
-        
+
         // 저장 결과를 savedEntity에 담아서
         AdminMenuEntity savedEntity = adminMenuRepository.save(adminMenuDto.to());
 
@@ -102,6 +111,47 @@ public class SettingMenuSub extends SettingMenuAbstract {
         if (savedEntity.getParentMenuId() == 0 && savedEntity.getTopMenuId() == 0) {
             savedEntity.updateTopMenuId(savedEntity.getMenuSeq());
             adminMenuRepository.save(savedEntity);
+        }
+    }
+
+    @Override
+    public void uploadMenuImage(Long menuSeq, MultipartFile file, String onOff) throws IOException {
+        // 파일 업로드
+        fileUtil.uploadFile(file, menuFileConfig.getUploadPath()+file.getOriginalFilename());
+
+        // 파일 업로드 결과 저장
+        FileDto fileDto =
+                fileUtil.createFileDto(file, menuFileConfig.getUploadPath()+file.getOriginalFilename());
+
+        FileEntity fileEntity = fileRepository.save(fileDto.to());
+        AdminMenuEntity adminMenuEntity = adminMenuRepository.findById(menuSeq).get();
+
+        FileEntity prevFileEntity = null;
+
+        switch (onOff.toLowerCase()) {
+            case "on":
+                prevFileEntity = adminMenuEntity.getOnImageFile();
+                adminMenuEntity.setOnImageFile(fileEntity);
+                break;
+            case "off":
+                prevFileEntity = adminMenuEntity.getOffImageFile();
+                adminMenuEntity.setOffImageFile(fileEntity);
+                break;
+        }
+
+        // 새로운 image로 update
+        adminMenuRepository.saveAndFlush(adminMenuEntity);
+
+        // 모든과정이 정상적으로 끝나면, 이전 image 삭제 및 file deleteYn 'Y'
+        if (prevFileEntity != null) {
+            FileDto prevFileDto = new FileDto(prevFileEntity);
+            prevFileDto.setDeleteYn('Y');
+
+            // 이전 파일 데이터 삭제
+            fileRepository.delete(prevFileDto.to());
+            // 이전 파일 물리적 삭제
+            File deletePrevFile = new File(prevFileDto.getFilePath());
+            deletePrevFile.delete();
         }
     }
 
