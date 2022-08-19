@@ -2,6 +2,7 @@ package com.lunar.lunarMgmt.api.setting.controller;
 
 import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.api.setting.model.AdminMenuDto;
+import com.lunar.lunarMgmt.api.setting.model.MenuSort;
 import com.lunar.lunarMgmt.api.setting.model.VueMenuDto;
 import com.lunar.lunarMgmt.api.setting.service.MenuService;
 import lombok.RequiredArgsConstructor;
@@ -54,5 +55,15 @@ public class MenuController {
     public void updateMenuImage(@PathVariable Long menuSeq, @RequestPart MultipartFile file,
                                 @PathVariable String onOff) throws IOException {
         menuService.uploadMenuImage(menuSeq, file, onOff);
+    }
+
+    @PutMapping(value = "/sort")
+    public void sortMenu(@RequestBody MenuSort menuSort) {
+        menuService.sortMenu(menuSort);
+    }
+
+    @DeleteMapping(value = "/{menuSeq}")
+    public void deleteMenu(@PathVariable Long menuSeq) {
+        menuService.deleteMenu(menuSeq);
     }
 }

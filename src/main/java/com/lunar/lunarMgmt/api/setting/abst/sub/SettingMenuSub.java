@@ -3,6 +3,7 @@ package com.lunar.lunarMgmt.api.setting.abst.sub;
 import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.api.setting.abst.SettingMenuAbstract;
 import com.lunar.lunarMgmt.api.setting.model.AdminMenuDto;
+import com.lunar.lunarMgmt.api.setting.model.MenuSort;
 import com.lunar.lunarMgmt.api.setting.model.VueMenuDto;
 import com.lunar.lunarMgmt.api.setting.util.MenuFileUtil;
 import com.lunar.lunarMgmt.common.config.yml.MenuFileConfig;
@@ -17,8 +18,10 @@ import com.lunar.lunarMgmt.common.model.FileDto;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.PersistenceException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -152,6 +155,82 @@ public class SettingMenuSub extends SettingMenuAbstract {
             // 이전 파일 물리적 삭제
             File deletePrevFile = new File(prevFileDto.getFilePath());
             deletePrevFile.delete();
+        }
+    }
+
+    @Override
+    public void sortMenu(MenuSort menuSort) {
+        List<AdminMenuEntity> sortMenus;
+        // 같은 부모 메뉴의 하위 메뉴들 정렬 순서 변경
+        // 수정할 sortNum이 asis sortNum보다 작을 때 ex) 1, 3
+        if (menuSort.getSortNum() < menuSort.getBeforeSortNum()) {
+            sortMenus =
+                    adminMenuRepository.findByParentMenuIdAndMenuSeqNotAndSortNumBetween(menuSort.getParentMenuId(),
+                            menuSort.getParentMenuId(), menuSort.getSortNum(), menuSort.getBeforeSortNum() - 1);
+            sortMenus = sortMenus.stream().map((menu) -> {
+                AdminMenuDto md = new AdminMenuDto(menu);
+                md.setSortNum(menu.getSortNum() + 1);
+                return md.to();
+            }).collect(Collectors.toList());
+        } else {
+            sortMenus =
+                    adminMenuRepository.findByParentMenuIdAndMenuSeqNotAndSortNumBetween(menuSort.getParentMenuId(),
+                            menuSort.getParentMenuId(), menuSort.getBeforeSortNum() + 1, menuSort.getSortNum());
+
+            sortMenus = sortMenus.stream().map((menu) -> {
+                AdminMenuDto md = new AdminMenuDto(menu);
+                md.setSortNum(menu.getSortNum() - 1);
+                return md.to();
+            }).collect(Collectors.toList());
+        }
+
+        List<AdminMenuEntity> savedList = adminMenuRepository.saveAll(sortMenus);
+
+        // 변경이 되었으면
+        if (savedList.size() > 0) {
+            // 변경 할 메뉴의 정렬 순서 변경
+            AdminMenuEntity entity = adminMenuRepository.findById(menuSort.getMenuSeq()).get();
+            AdminMenuDto dto = new AdminMenuDto(entity);
+            dto.setSortNum(menuSort.getSortNum());
+
+            adminMenuRepository.save(dto.to());
+        }
+    }
+
+    @Override
+    public void deleteMenu(Long menuSeq) {
+        AdminMenuEntity menuEntity = adminMenuRepository.findById(menuSeq).get();
+        int lastSortNum = adminMenuRepository.selectLastSortNumByParentMenuId(menuEntity.getParentMenuId());
+
+        MenuSort menuSort = new MenuSort(menuEntity.getParentMenuId(), menuEntity.getMenuSeq(), lastSortNum, menuEntity.getSortNum());
+        // 삭제 전 sortNum을 맞춰주기 위해 맨 마지막으로 보낸다
+        sortMenu(menuSort);
+
+        FileEntity onFile = menuEntity.getOnImageFile();
+        if (!ObjectUtils.isEmpty(onFile)) {
+            onFile.updateDeleteYn('N');
+        }
+        FileEntity offFile = menuEntity.getOffImageFile();
+        if (!ObjectUtils.isEmpty(offFile)) {
+            offFile.updateDeleteYn('N');
+        }
+
+        try {
+            adminMenuRepository.delete(menuEntity);
+            adminMenuRepository.flush();
+        } catch (RuntimeException e) {
+            throw new RuntimeException("권한에 등록되어있는 메뉴입니다.\n권한에서 제거 후 삭제해 주십시오.");
+        }
+
+        if (!ObjectUtils.isEmpty(onFile)) {
+            fileRepository.delete(onFile);
+            File deleteFile = new File(onFile.getFilePath());
+            deleteFile.delete();
+        }
+        if (!ObjectUtils.isEmpty(offFile)) {
+            fileRepository.delete(offFile);
+            File deleteFile = new File(offFile.getFilePath());
+            deleteFile.delete();
         }
     }
 

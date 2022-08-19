@@ -2,6 +2,7 @@ package com.lunar.lunarMgmt.api.setting.abst;
 
 import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.api.setting.model.AdminMenuDto;
+import com.lunar.lunarMgmt.api.setting.model.MenuSort;
 import com.lunar.lunarMgmt.api.setting.model.VueMenuDto;
 import com.lunar.lunarMgmt.common.config.yml.MenuFileConfig;
 import com.lunar.lunarMgmt.common.intf.FileUtil;
@@ -44,4 +45,10 @@ public abstract class SettingMenuAbstract {
 
     // 메뉴 정렬 순서 변경
     public abstract void uploadMenuImage(Long menuSeq, MultipartFile file, String onOff) throws IOException;
+
+    // 메뉴 정렬 순서 변경
+    public abstract void sortMenu(MenuSort menuSort);
+    
+    // 메뉴 삭제
+    public abstract void deleteMenu(Long menuSeq);
 }

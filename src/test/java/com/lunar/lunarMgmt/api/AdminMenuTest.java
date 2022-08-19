@@ -5,6 +5,7 @@ import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.api.setting.abst.SettingAuthAbstract;
 import com.lunar.lunarMgmt.api.setting.abst.SettingMenuAbstract;
 import com.lunar.lunarMgmt.api.setting.model.AdminMenuDto;
+import com.lunar.lunarMgmt.api.setting.model.MenuSort;
 import com.lunar.lunarMgmt.api.setting.model.VueMenuDto;
 import com.lunar.lunarMgmt.common.jpa.entities.AdminMenuEntity;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminMenuRepository;
@@ -130,5 +131,36 @@ public class AdminMenuTest {
                 () -> assertTrue(adminMenuEntity.getMenuNm().equals("시스템 관리"))
         );
     }
+
+    @Test
+    @DisplayName("메뉴 정렬 ")
+    public void sortMenu(){
+        // given
+        MenuSort menuSort = MenuSort.builder()
+                .beforeSortNum(3)
+                .sortNum(1)
+                .parentMenuId(1L)
+                .menuSeq(2L).build();
+
+        // when
+        settingMenuAbstract.sortMenu(menuSort);
+
+        //then
+        assertAll(
+                () -> assertTrue(adminMenuRepository.findById(menuSort.getMenuSeq()).get().getSortNum() == 1)
+        );
+    }
     
+    @Test
+    @DisplayName("메뉴 삭제")
+    public void deleteMenu(){
+        // given
+        Long menuSeq = 1L;
+
+        // when
+        settingMenuAbstract.deleteMenu(menuSeq);
+
+        // then
+        assertTrue(adminMenuRepository.findById(menuSeq).isPresent());
+    }
 }
