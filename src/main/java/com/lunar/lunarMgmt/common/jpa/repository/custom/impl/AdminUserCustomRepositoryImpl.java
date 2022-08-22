@@ -13,7 +13,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
@@ -25,9 +24,7 @@ import static com.lunar.lunarMgmt.common.jpa.entities.QAdminUserEntity.adminUser
 
 @RequiredArgsConstructor
 public class AdminUserCustomRepositoryImpl implements AdminUserCustomRepository {
-
     private final EntityManager entityManager;
-    private final JPAQueryFactory queryFactory;
 
     @Override
     public List<AdminUserDto> findByAdminUserList(AdminUserListSearchDto searchDto) {
