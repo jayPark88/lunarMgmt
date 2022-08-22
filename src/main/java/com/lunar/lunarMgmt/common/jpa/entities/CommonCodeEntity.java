@@ -1,10 +1,28 @@
 package com.lunar.lunarMgmt.common.jpa.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.lunar.lunarMgmt.common.jpa.entities.pk.CommonCodePK;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
+@EqualsAndHashCode(callSuper=false)
+@Data
+@SuperBuilder
+@DynamicInsert
+@DynamicUpdate
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
+@Entity
+@Table(name = "COMMON_CD", indexes = @Index(columnList = "CD"))
+@AllArgsConstructor
+@NoArgsConstructor
 public class CommonCodeEntity {
 
     @EmbeddedId
