@@ -2,8 +2,8 @@ package com.lunar.lunarMgmt.api.setting.abst.sub;
 
 import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.api.setting.abst.SettingAuthAbstract;
-import com.lunar.lunarMgmt.api.setting.model.AuthDto;
 import com.lunar.lunarMgmt.api.setting.model.AdminAuthMenuDto;
+import com.lunar.lunarMgmt.api.setting.model.AuthDto;
 import com.lunar.lunarMgmt.api.setting.model.VueMenuDto;
 import com.lunar.lunarMgmt.api.setting.util.AuthMenuUtil;
 import com.lunar.lunarMgmt.common.jpa.entities.AdminAuthEntity;
@@ -15,9 +15,10 @@ import com.lunar.lunarMgmt.common.jpa.repository.AdminMenuRepository;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminUserRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -46,7 +47,7 @@ public class SettingAuthSub extends SettingAuthAbstract {
     @Override
     public void deleteAuth(Long authSeq) {
         Optional<AdminAuthEntity>optionalAdminAuthEntity = adminAuthRepository.findById(authSeq);
-        if(optionalAdminAuthEntity.get().getAdminUserList().size()>0){
+        if(optionalAdminAuthEntity.isPresent() && optionalAdminAuthEntity.get().getAdminUserList().size()>0){
             throw new RuntimeException("해당 권한은 adminUser에서 사용 중입니다.");
         }else{
             adminAuthRepository.deleteById(authSeq);
@@ -55,10 +56,12 @@ public class SettingAuthSub extends SettingAuthAbstract {
 
     @Override
     public List<AdminUserDto> selectAuthUserList(Long authSeq) {
-        List<AdminUserEntity> adminUserEntityList = adminAuthRepository.findById(authSeq).get().getAdminUserList();
-        return adminUserEntityList.stream().map((item) ->{
-            return new AdminUserDto(item).withoutPasswd();
-        }).collect(Collectors.toList());
+        List<AdminUserEntity> adminUserEntityList = new ArrayList<>();
+        Optional<AdminAuthEntity>optionalAdminAuthEntity = adminAuthRepository.findById(authSeq);
+        if(optionalAdminAuthEntity.isPresent()){
+            adminUserEntityList = optionalAdminAuthEntity.get().getAdminUserList();
+        }
+        return adminUserEntityList.stream().map((item) -> new AdminUserDto(item).withoutPasswd()).collect(Collectors.toList());
     }
 
     @Override
@@ -76,7 +79,7 @@ public class SettingAuthSub extends SettingAuthAbstract {
 
     @Override
     public void saveAuthMenu(List<AdminAuthMenuDto> adminAuthMenuDtos, AdminUserDto adminUserDto) {
-        List<AdminAuthMenuEntity> saveList = new ArrayList<AdminAuthMenuEntity>();
+        List<AdminAuthMenuEntity> saveList = new ArrayList<>();
         Long authSeq = adminAuthMenuDtos.get(0).getAuthSeq();
 
         // 전부 다 삭제 처리 하고 다시 추가를 한다.
@@ -97,28 +100,32 @@ public class SettingAuthSub extends SettingAuthAbstract {
 
     @Override
     public void saveAuthUsers(Long authSeq, Long[] userSeqs) {
-        for(int i=0; i<userSeqs.length; i++){
-            AdminUserEntity adminUserEntity = adminUserRepository.findById(userSeqs[i]).get();
-            if (adminUserEntity.getAuth() != null)
-                throw new RuntimeException(String.format(
-                        "[%s(%s)]는 이미 [%s] 권한을 가지고 있습니다.", adminUserEntity.getAdminUserId(), adminUserEntity.getAdminUserNm(),
-                        adminUserEntity.getAuth().getAuthNm()));
+        for (Long userSeq : userSeqs) {
+            Optional<AdminUserEntity>optionalAdminUserEntity = adminUserRepository.findById(userSeq);
+            if(optionalAdminUserEntity.isPresent()){
+                if (optionalAdminUserEntity.get().getAuth() != null)
+                    throw new RuntimeException(String.format(
+                            "[%s(%s)]는 이미 [%s] 권한을 가지고 있습니다.", optionalAdminUserEntity.get().getAdminUserId(), optionalAdminUserEntity.get().getAdminUserNm(),
+                            optionalAdminUserEntity.get().getAuth().getAuthNm()));
 
-            AdminUserDto adminUserDto = new AdminUserDto(adminUserEntity);
-            adminUserDto.setAuthSeq(authSeq);
+                AdminUserDto adminUserDto = new AdminUserDto(optionalAdminUserEntity.get());
+                adminUserDto.setAuthSeq(authSeq);
 
-            adminUserRepository.save(adminUserDto.to());
+                adminUserRepository.save(adminUserDto.to());
+            }
         }
     }
 
     @Override
     public void deleteAuthUsers(Long authSeq, Long[] userSeqs) {
-        for (int i = 0; i < userSeqs.length; i++) {
-            AdminUserEntity adminUserEntity = adminUserRepository.findById(userSeqs[i]).get();
-            AdminUserDto adminUserDto = new AdminUserDto(adminUserEntity);
-            adminUserDto.setAuthSeq(null);
+        for (Long userSeq : userSeqs) {
+            Optional<AdminUserEntity>optionalAdminUserEntity = adminUserRepository.findById(userSeq);
+            if(optionalAdminUserEntity.isPresent()){
+                AdminUserDto adminUserDto = new AdminUserDto(optionalAdminUserEntity.get());
+                adminUserDto.setAuthSeq(null);
 
-            adminUserRepository.save(adminUserDto.to());
+                adminUserRepository.save(adminUserDto.to());
+            }
         }
     }
 }
