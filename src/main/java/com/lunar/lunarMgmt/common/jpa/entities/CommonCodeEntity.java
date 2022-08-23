@@ -23,7 +23,7 @@ import javax.persistence.*;
 @Table(name = "COMMON_CD", indexes = @Index(columnList = "CD"))
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommonCodeEntity {
+public class CommonCodeEntity extends AdminBaseEntity{
 
     @EmbeddedId
     private CommonCodePK commonCodePk;

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class CodeSearchDto{
+public class CodeSearchDto {
     private String groupCode;
     private String groupCodeName;
     private String code;

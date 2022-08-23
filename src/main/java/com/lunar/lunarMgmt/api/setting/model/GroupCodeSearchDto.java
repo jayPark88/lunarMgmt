@@ -9,9 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class CommonCodeSearchDto {
+public class GroupCodeSearchDto {
     private String groupCode;
-    private String code;
-    private String codeName;
+    private String groupCodeName;
     private Character useYn;
 }
