@@ -5,16 +5,14 @@ import com.lunar.lunarMgmt.common.jpa.entities.CommonCodeEntity;
 import com.lunar.lunarMgmt.common.jpa.entities.CommonGroupCodeEntity;
 import com.lunar.lunarMgmt.common.jpa.entities.pk.CommonCodePK;
 import com.lunar.lunarMgmt.common.model.AdminBaseDto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@EqualsAndHashCode(callSuper=false)
 public class CommonCodeDto extends AdminBaseDto implements ChangableToFromEntity<CommonCodeEntity> {
 
     private String groupCode;

@@ -6,12 +6,10 @@ import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.api.system.abst.sub.AdminUserSub;
 import com.lunar.lunarMgmt.api.system.model.AdminUserListSearchDto;
 import com.lunar.lunarMgmt.common.jpa.entities.AdminUserEntity;
-import com.lunar.lunarMgmt.common.jpa.repository.AdminUserRepository;
 import com.lunar.lunarMgmt.common.model.PageRequest;
 import com.lunar.lunarMgmt.common.model.PageResponse;
 import com.lunar.lunarMgmt.common.utils.AdminBaseIdNmSetUtilIImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

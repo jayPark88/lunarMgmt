@@ -5,8 +5,8 @@ import com.lunar.lunarMgmt.common.jpa.entities.AdminAuthEntity;
 import com.lunar.lunarMgmt.common.jpa.entities.AdminUserEntity;
 import com.lunar.lunarMgmt.common.model.AdminBaseDto;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.util.ObjectUtils;
@@ -15,6 +15,7 @@ import org.springframework.util.ObjectUtils;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper=false)
 public class AdminUserDto extends AdminBaseDto implements ChangableToFromEntity<AdminUserEntity> {
 
   private Long adminUserSeq;

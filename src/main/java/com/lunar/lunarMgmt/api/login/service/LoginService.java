@@ -1,7 +1,6 @@
 package com.lunar.lunarMgmt.api.login.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.api.login.model.Tokens;
 import com.lunar.lunarMgmt.common.exception.ExpiredTokenException;
@@ -12,9 +11,7 @@ import com.lunar.lunarMgmt.common.sercurity.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 @Service
@@ -24,10 +21,10 @@ public class LoginService {
   private final AdminUserRepository adminUserRepo;
   private final PasswordEncoder passwordEncoder;
   private final JwtUtil jwtUtil;
-  public Tokens login(AdminUserDto adminUser, HttpServletResponse response) throws NotFoundUserException, JsonProcessingException {
+  public Tokens login(AdminUserDto adminUser) throws NotFoundUserException, JsonProcessingException {
     Optional<AdminUserEntity> adminUserEntity = adminUserRepo.findByAdminUserId(adminUser.getAdminUserId());
 
-    if (!adminUserEntity.isPresent()) {
+    if (adminUserEntity.isEmpty()) {
       throw new NotFoundUserException();
     }
     if (adminUserEntity.get().getDeleteYn().equals('Y')) {
@@ -52,8 +49,8 @@ public class LoginService {
     return new Tokens(accessToken, refreshToken);
   }
 
-  public Tokens refreshToken(String refreshToken) throws ExpiredTokenException, JsonMappingException, JsonProcessingException {
-    String newRefreshToken = null;
+  public Tokens refreshToken(String refreshToken) throws ExpiredTokenException, JsonProcessingException {
+    String newRefreshToken;
 
     if (Optional.ofNullable(refreshToken).isPresent()) {
       AdminUserDto adminUserDto = jwtUtil.getUserDtoInToken(refreshToken);

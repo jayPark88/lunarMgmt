@@ -10,16 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * @Package : kr.co.wiseai.admin.common.dto
- * @FileName : PageResponse.java
- * @CreateDate : 2021. 7. 6.
- * @author : Morian
- * @param <E> : Entity
- * @param <D> : Dto
- * @Description :
- */
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

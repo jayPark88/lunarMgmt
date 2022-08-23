@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,18 +36,10 @@ public class CommonGroupCode implements ChangableToFromEntity<CommonGroupCodeEnt
 
     // front에서 사용할 멤버
     public boolean focus = false;
-    public boolean getOpen() {
-        return this.commonCodeDtos.size() > 0 ? true : false;
-    }
 
     public CommonGroupCode(CommonGroupCodeEntity entity) {
         commonCodeDtos = new ArrayList<>();
         from(entity);
-    }
-
-    public CommonGroupCode commonCodes(CommonGroupCodeEntity commonGroupCodeEntity) {
-        this.commonCodeDtos = commonGroupCodeEntity.getCommonCodes().stream().map(e -> new CommonCodeDto(e)).collect(Collectors.toList());
-        return this;
     }
 
     public CommonGroupCode commonCodes(List<CommonCodeDto> commonCodeDtoList) {

@@ -21,7 +21,7 @@ public class PageRequest {
     this.direction = Direction.ASC;
 
     if (StringUtils.hasLength(direction)) {
-      if ("DESC".equals(direction.toUpperCase()))
+      if ("DESC".equalsIgnoreCase(direction))
         this.direction = Direction.DESC;
     }
   }

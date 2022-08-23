@@ -5,8 +5,11 @@ import com.lunar.lunarMgmt.common.exception.model.extend.intf.CreatableErrorCode
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
+
 public class UncheckedException extends RuntimeException implements CreatableErrorCode {
 
+  @Serial
   private static final long serialVersionUID = 1L;
 
   private ErrorCode errorCode;

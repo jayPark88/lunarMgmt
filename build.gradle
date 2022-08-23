@@ -63,7 +63,7 @@ dependencies {
 }
 
 bootWar{
-    archiveBaseName="wiseai-admin"
+    archiveBaseName="lunar-admin"
     archiveVersion="0.0.1-SNAPSHOT"
 }
 
@@ -73,11 +73,11 @@ jar{
 
 bootJar{
     enabled = true
-    archiveBaseName="wiseai-admin"
+    archiveBaseName="lunar-admin"
     archiveVersion="0.0.1-SNAPSHOT"
 }
 
-description = 'wiseai-admin'
+description = 'lunar-admin'
 
 tasks.named('test') {
     useJUnitPlatform()

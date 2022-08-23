@@ -27,12 +27,4 @@ public class VueMenuDto {
         level = data.getMenuLevel();
 
     }
-
-    public boolean getIsLeaf() {
-        return children.size() <= 0;
-    }
-
-    public boolean getIsExpanded() {
-        return children.size() > 0;
-    }
 }

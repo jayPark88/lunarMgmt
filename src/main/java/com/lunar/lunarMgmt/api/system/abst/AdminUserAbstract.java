@@ -8,7 +8,6 @@ import com.lunar.lunarMgmt.common.jpa.repository.AdminUserRepository;
 import com.lunar.lunarMgmt.common.model.PageRequest;
 import com.lunar.lunarMgmt.common.model.PageResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 

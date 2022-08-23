@@ -4,22 +4,17 @@ import com.lunar.lunarMgmt.api.setting.abst.sub.SettingMenuSub;
 import com.lunar.lunarMgmt.api.setting.model.VueMenuDto;
 import com.lunar.lunarMgmt.common.jpa.entities.AdminAuthMenuEntity;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminAuthMenuRepository;
-import com.lunar.lunarMgmt.common.jpa.repository.AdminMenuRepository;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class AuthMenuUtil {
     private final AdminAuthMenuRepository adminAuthMenuRepository;
-    private final AdminMenuRepository adminMenuRepository;
     private final SettingMenuSub settingMenuSub;
 
     // 권한 메뉴에서 권한에 등록할 메뉴 리스트 가져오기
@@ -31,8 +26,7 @@ public class AuthMenuUtil {
         Map<Long, AdminAuthMenuEntity> authMenuMap = new HashMap<>();
         // 해당 권한한에 속한 사용 중인 권한 리스트 사이즈 만큼 loop문을 돌려서 각 element를 AdminAuthMenuentity에 넣어서
         // key에는 menuSeq, value에는 adminAuthMenuEntity를 넣는다.
-        for(int i=0; i<authMenuList.size(); i++) {
-            AdminAuthMenuEntity adminAuthMenuEntity = authMenuList.get(i);
+        for (AdminAuthMenuEntity adminAuthMenuEntity : authMenuList) {
             authMenuMap.put(adminAuthMenuEntity.getMenu().getMenuSeq(), adminAuthMenuEntity);
         }
 
@@ -62,12 +56,10 @@ public class AuthMenuUtil {
 
     // VueMenu Tree 만들기
     public List<VueMenuDto> createVueMenuTree(List<VueMenuDto> menus, List<VueMenuDto> allMenus) {
-        for (int i = 0; i < menus.size(); i++) {
-            VueMenuDto vueMenu = menus.get(i);
-
+        for (VueMenuDto vueMenu : menus) {
             List<VueMenuDto> children = allMenus.stream()
                     .filter((m) -> m.getData().getParentMenuId() != 0
-                            && m.getData().getParentMenuId() == vueMenu.getData().getMenuSeq())
+                            && Objects.equals(m.getData().getParentMenuId(), vueMenu.getData().getMenuSeq()))
                     .collect(Collectors.toList());
 
             if (children.size() > 0) {

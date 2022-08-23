@@ -1,14 +1,10 @@
 package com.lunar.lunarMgmt.api.setting.model;
 
-import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.common.intf.ChangableToFromEntity;
 import com.lunar.lunarMgmt.common.jpa.entities.AdminAuthEntity;
 import com.lunar.lunarMgmt.common.model.AdminBaseDto;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @EqualsAndHashCode(callSuper=false)
 @Setter

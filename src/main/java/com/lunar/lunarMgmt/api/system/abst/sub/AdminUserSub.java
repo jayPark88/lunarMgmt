@@ -24,21 +24,23 @@ public class AdminUserSub extends AdminUserAbstract {
 
   @Override
   public void saveAdminUser(AdminUserDto adminUserDto) {
-    AdminUserEntity adminUserEntity = new AdminUserEntity();
     if(this.checkAdminUserExist(adminUserDto)){
-      adminUserEntity = adminUserRepository.findById(adminUserDto.getAdminUserSeq()).get();
-    }
+      Optional<AdminUserEntity>optionalAdminUserEntity = adminUserRepository.findById(adminUserDto.getAdminUserSeq());
+      if(optionalAdminUserEntity.isPresent()){
+        // adminUserDto의 adminUserPwd의 값이 존재한다면(신규등록 절차에서만 해당 필드에 값이 set되서 data가 전송된다.)
+        if (StringUtils.hasLength(adminUserDto.getAdminUserPwd())) {
+          adminUserDto.setAdminUserPwd(passwordEncoder.encode(adminUserDto.getAdminUserPwd()));
+        } else {
+          // 그게 아니면 AdminUserDto의 adminUserPwd의 값을 adminUserEntity에서 조회 한 값을 set 해준다.
+          adminUserDto.setAdminUserPwd(optionalAdminUserEntity.get().getAdminUserPwd());
+        }
 
-    // adminUserDto의 adminUserPwd의 값이 존재한다면(신규등록 절차에서만 해당 필드에 값이 set되서 data가 전송된다.)
-    if (StringUtils.hasLength(adminUserDto.getAdminUserPwd())) {
-      adminUserDto.setAdminUserPwd(passwordEncoder.encode(adminUserDto.getAdminUserPwd()));
-    } else {
-      // 그게 아니면 AdminUserDto의 adminUserPwd의 값을 adminUserEntity에서 조회 한 값을 set 해준다.
-      adminUserDto.setAdminUserPwd(adminUserEntity.getAdminUserPwd());
+        // 해당 setting된 값을 save해준다.
+        adminUserRepository.save(adminUserDto.to());
+      }else{
+        throw new RuntimeException("HQ-ADMIN User 정보가 유효하지 않습니다.");
+      }
     }
-
-    // 해당 setting된 값을 save해준다.
-    adminUserRepository.save(adminUserDto.to());
   }
 
   @Override
@@ -58,13 +60,7 @@ public class AdminUserSub extends AdminUserAbstract {
     if (!ObjectUtils.isEmpty(adminUserDto.getAdminUserSeq())) {
       // adminUserSeq로 db에서 조회를 한다.
       Optional<AdminUserEntity> optionalAdminUserEntity = adminUserRepository.findById(adminUserDto.getAdminUserSeq());
-      if(optionalAdminUserEntity.isPresent()){
-        // 조회 결과 값이 존재 하면 true
-        return true;
-      }else{
-        // 조회 결과 값이 없으면 false
-        return false;
-      }
+      return optionalAdminUserEntity.isPresent();
     }else{
       // adminUserDto의 adminUserSeq가 없다면 신규등록 알고리즘으로 retrun false
       return false;
