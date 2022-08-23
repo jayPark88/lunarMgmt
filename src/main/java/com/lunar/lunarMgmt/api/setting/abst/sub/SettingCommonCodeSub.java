@@ -1,6 +1,5 @@
 package com.lunar.lunarMgmt.api.setting.abst.sub;
 
-import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.api.setting.abst.SettingCommonCodeAbstract;
 import com.lunar.lunarMgmt.api.setting.model.*;
 import com.lunar.lunarMgmt.common.jpa.entities.CommonCodeEntity;
@@ -14,10 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -57,8 +53,7 @@ public class SettingCommonCodeSub extends SettingCommonCodeAbstract {
     @Override
     public List<CommonCodeDto> selectCommonCodeList(String groupCode) {
         List<CommonCodeEntity> commonCodeEntities = commonCodeRepository.findAllByCommonCodePkGrpCdOrderBySortNum(groupCode);
-        List<CommonCodeDto> commonCodes = commonCodeEntities.stream().map(e -> new CommonCodeDto(e)).collect(Collectors.toList());
-        return commonCodes;
+        return commonCodeEntities.stream().map(CommonCodeDto::new).collect(Collectors.toList());
     }
 
     @Override
@@ -83,20 +78,24 @@ public class SettingCommonCodeSub extends SettingCommonCodeAbstract {
 
     @Override
     public void deleteCommonCode(String groupCode, String code) {
-        CommonCodeEntity cce = commonCodeRepository.findById(new CommonCodePK(groupCode, code)).get();
-        int sortNum = cce.getSortNum();
-        commonCodeRepository.deleteById(new CommonCodePK(groupCode, code));
+        Optional<CommonCodeEntity>optionalCommonCodeEntity = commonCodeRepository.findById(new CommonCodePK(groupCode, code));
+        if(optionalCommonCodeEntity.isPresent()){
+            int sortNum = optionalCommonCodeEntity.get().getSortNum();
+            commonCodeRepository.deleteById(new CommonCodePK(groupCode, code));
 
-        List<CommonCodeEntity> sortCodes = commonCodeRepository
-                .findByCommonCodePkGrpCdAndCommonCodePkCdNotAndSortNumGreaterThan(groupCode, code, sortNum);
+            List<CommonCodeEntity> sortCodes = commonCodeRepository
+                    .findByCommonCodePkGrpCdAndCommonCodePkCdNotAndSortNumGreaterThan(groupCode, code, sortNum);
 
-        sortCodes = sortCodes.stream().map((sc) -> {
-            CommonCodeDto cc = new CommonCodeDto(sc);
-            cc.setSortNum(sc.getSortNum() - 1);
-            return cc.to();
-        }).collect(Collectors.toList());
+            sortCodes = sortCodes.stream().map((sc) -> {
+                CommonCodeDto cc = new CommonCodeDto(sc);
+                cc.setSortNum(sc.getSortNum() - 1);
+                return cc.to();
+            }).collect(Collectors.toList());
 
-        commonCodeRepository.saveAll(sortCodes);
+            commonCodeRepository.saveAll(sortCodes);
+        }else{
+            throw new RuntimeException("삭제 대상 공통코드가 없습니다. 다시 확인 해 주세요.");
+        }
     }
 
     @Override
@@ -133,11 +132,15 @@ public class SettingCommonCodeSub extends SettingCommonCodeAbstract {
         if (savedList.size() > 0) {
             // 변경 할 메뉴의 정렬 순서 변경
             CommonCodePK pk = new CommonCodePK(commonCodeSort.getGroupCode(), commonCodeSort.getCode());
-            CommonCodeEntity entity = commonCodeRepository.findById(pk).get();
-            CommonCodeDto dto = new CommonCodeDto(entity);
-            dto.setSortNum(commonCodeSort.getSortNum());
+            Optional<CommonCodeEntity>optionalCommonCodeEntity = commonCodeRepository.findById(pk);
+            if(optionalCommonCodeEntity.isPresent()){
+                CommonCodeDto dto = new CommonCodeDto(optionalCommonCodeEntity.get());
+                dto.setSortNum(commonCodeSort.getSortNum());
 
-            commonCodeRepository.save(dto.to());
+                commonCodeRepository.save(dto.to());
+            }else{
+                throw new RuntimeException("변경 할 메뉴의 공통 코드 값이 유효하지 않습니다.");
+            }
         }
     }
 
@@ -154,17 +157,17 @@ public class SettingCommonCodeSub extends SettingCommonCodeAbstract {
 
             // 그룹코드 Map에 넣기
             CommonGroupCodeEntity cgce = e.getCommonGroupCode();
-            CommonGroupCode cgc = null;
+            CommonGroupCode commonGroupCode;
 
             if (!resultMap.containsKey(cgce.getGrpCd())) {
-                cgc = new CommonGroupCode(cgce);
-                resultMap.put(cgc.getCode(), cgc);
+                commonGroupCode = new CommonGroupCode(cgce);
+                resultMap.put(commonGroupCode.getCode(), commonGroupCode);
 
             } else {
-                cgc = resultMap.get(cgce.getGrpCd());
+                commonGroupCode = resultMap.get(cgce.getGrpCd());
             }
 
-            cgc.getCommonCodeDtos().add(cc);
+            commonGroupCode.getCommonCodeDtos().add(cc);
         });
         return new ArrayList<>(resultMap.values());
     }
@@ -172,6 +175,6 @@ public class SettingCommonCodeSub extends SettingCommonCodeAbstract {
     // CommonCodeSearchDto로 공통코드 구하기
     public List<CommonCodeDto> searchCommonCodeList(CommonCodeSearchDto searchDto, PageRequest pageRequest) {
         Page<CommonCodeEntity> commonCodeEntities = commonCodeRepository.searchGroupCodeList(searchDto, pageRequest);
-        return commonCodeEntities.getContent().stream().map(e -> new CommonCodeDto(e)).collect(Collectors.toList());
+        return commonCodeEntities.getContent().stream().map(CommonCodeDto::new).collect(Collectors.toList());
     }
 }
