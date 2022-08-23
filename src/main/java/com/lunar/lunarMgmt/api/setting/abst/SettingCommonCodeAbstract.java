@@ -1,6 +1,5 @@
 package com.lunar.lunarMgmt.api.setting.abst;
 
-import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.api.setting.model.CodeSearchDto;
 import com.lunar.lunarMgmt.api.setting.model.CommonCodeDto;
 import com.lunar.lunarMgmt.api.setting.model.CommonCodeSort;
