@@ -7,7 +7,6 @@ import com.lunar.lunarMgmt.api.setting.model.CommonGroupCode;
 import com.lunar.lunarMgmt.api.setting.service.CommonCodeService;
 import com.lunar.lunarMgmt.common.model.PageRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
