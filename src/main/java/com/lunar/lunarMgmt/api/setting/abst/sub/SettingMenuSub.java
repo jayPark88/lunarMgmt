@@ -5,7 +5,6 @@ import com.lunar.lunarMgmt.api.setting.abst.SettingMenuAbstract;
 import com.lunar.lunarMgmt.api.setting.model.AdminMenuDto;
 import com.lunar.lunarMgmt.api.setting.model.MenuSort;
 import com.lunar.lunarMgmt.api.setting.model.VueMenuDto;
-import com.lunar.lunarMgmt.api.setting.util.MenuFileUtil;
 import com.lunar.lunarMgmt.common.config.yml.MenuFileConfig;
 import com.lunar.lunarMgmt.common.intf.FileUtil;
 import com.lunar.lunarMgmt.common.jpa.entities.AdminAuthMenuEntity;
@@ -15,13 +14,13 @@ import com.lunar.lunarMgmt.common.jpa.repository.AdminAuthMenuRepository;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminMenuRepository;
 import com.lunar.lunarMgmt.common.jpa.repository.FileRepository;
 import com.lunar.lunarMgmt.common.model.FileDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.PersistenceException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,6 +31,7 @@ import java.util.stream.Collectors;
 
 @Component
 @Transactional
+@Slf4j
 public class SettingMenuSub extends SettingMenuAbstract {
 
     public SettingMenuSub(AdminMenuRepository adminMenuRepository, AdminAuthMenuRepository adminAuthMenuRepository, FileRepository fileRepository, MenuFileConfig menuFileConfig, FileUtil fileUtil) {
@@ -120,41 +120,44 @@ public class SettingMenuSub extends SettingMenuAbstract {
     @Override
     public void uploadMenuImage(Long menuSeq, MultipartFile file, String onOff) throws IOException {
         // 파일 업로드
-        fileUtil.uploadFile(file, menuFileConfig.getUploadPath()+file.getOriginalFilename());
+        fileUtil.uploadFile(file, menuFileConfig.getUploadPath() + file.getOriginalFilename());
 
         // 파일 업로드 결과 저장
         FileDto fileDto =
-                fileUtil.createFileDto(file, menuFileConfig.getUploadPath()+file.getOriginalFilename());
+                fileUtil.createFileDto(file, menuFileConfig.getUploadPath() + file.getOriginalFilename());
 
         FileEntity fileEntity = fileRepository.save(fileDto.to());
-        AdminMenuEntity adminMenuEntity = adminMenuRepository.findById(menuSeq).get();
+        Optional<AdminMenuEntity> optionalAdminMenuEntity = adminMenuRepository.findById(menuSeq);
+        if (optionalAdminMenuEntity.isPresent()) {
+            FileEntity prevFileEntity = null;
 
-        FileEntity prevFileEntity = null;
+            switch (onOff.toLowerCase()) {
+                case "on" -> {
+                    prevFileEntity = optionalAdminMenuEntity.get().getOnImageFile();
+                    optionalAdminMenuEntity.get().setOnImageFile(fileEntity);
+                }
+                case "off" -> {
+                    prevFileEntity = optionalAdminMenuEntity.get().getOffImageFile();
+                    optionalAdminMenuEntity.get().setOffImageFile(fileEntity);
+                }
+            }
 
-        switch (onOff.toLowerCase()) {
-            case "on":
-                prevFileEntity = adminMenuEntity.getOnImageFile();
-                adminMenuEntity.setOnImageFile(fileEntity);
-                break;
-            case "off":
-                prevFileEntity = adminMenuEntity.getOffImageFile();
-                adminMenuEntity.setOffImageFile(fileEntity);
-                break;
-        }
+            // 새로운 image로 update
+            adminMenuRepository.saveAndFlush(optionalAdminMenuEntity.get());
 
-        // 새로운 image로 update
-        adminMenuRepository.saveAndFlush(adminMenuEntity);
+            // 모든과정이 정상적으로 끝나면, 이전 image 삭제 및 file deleteYn 'Y'
+            if (prevFileEntity != null) {
+                FileDto prevFileDto = new FileDto(prevFileEntity);
+                prevFileDto.setDeleteYn('Y');
 
-        // 모든과정이 정상적으로 끝나면, 이전 image 삭제 및 file deleteYn 'Y'
-        if (prevFileEntity != null) {
-            FileDto prevFileDto = new FileDto(prevFileEntity);
-            prevFileDto.setDeleteYn('Y');
-
-            // 이전 파일 데이터 삭제
-            fileRepository.delete(prevFileDto.to());
-            // 이전 파일 물리적 삭제
-            File deletePrevFile = new File(prevFileDto.getFilePath());
-            deletePrevFile.delete();
+                // 이전 파일 데이터 삭제
+                fileRepository.delete(prevFileDto.to());
+                // 이전 파일 물리적 삭제
+                File deletePrevFile = new File(prevFileDto.getFilePath());
+                this.deleteFile(deletePrevFile);
+            }
+        } else {
+            throw new RuntimeException("menu정보가 유효하지 않습니다. 다시 한번 확인해 주세요.");
         }
     }
 
@@ -189,48 +192,57 @@ public class SettingMenuSub extends SettingMenuAbstract {
         // 변경이 되었으면
         if (savedList.size() > 0) {
             // 변경 할 메뉴의 정렬 순서 변경
-            AdminMenuEntity entity = adminMenuRepository.findById(menuSort.getMenuSeq()).get();
-            AdminMenuDto dto = new AdminMenuDto(entity);
-            dto.setSortNum(menuSort.getSortNum());
+            Optional<AdminMenuEntity> optionalAdminMenuEntity = adminMenuRepository.findById(menuSort.getMenuSeq());
+            if (optionalAdminMenuEntity.isPresent()) {
+                AdminMenuDto dto = new AdminMenuDto(optionalAdminMenuEntity.get());
+                dto.setSortNum(menuSort.getSortNum());
 
-            adminMenuRepository.save(dto.to());
+                adminMenuRepository.save(dto.to());
+            } else {
+                throw new RuntimeException("유효 하지 않은 메뉴 정보 입니다. 다시 한번 확인 해 주세요.");
+            }
+
         }
     }
 
     @Override
     public void deleteMenu(Long menuSeq) {
-        AdminMenuEntity menuEntity = adminMenuRepository.findById(menuSeq).get();
-        int lastSortNum = adminMenuRepository.selectLastSortNumByParentMenuId(menuEntity.getParentMenuId());
+        Optional<AdminMenuEntity> optionalAdminMenuEntity = adminMenuRepository.findById(menuSeq);
+        if (optionalAdminMenuEntity.isPresent()) {
+            int lastSortNum = adminMenuRepository.selectLastSortNumByParentMenuId(optionalAdminMenuEntity.get().getParentMenuId());
 
-        MenuSort menuSort = new MenuSort(menuEntity.getParentMenuId(), menuEntity.getMenuSeq(), lastSortNum, menuEntity.getSortNum());
-        // 삭제 전 sortNum을 맞춰주기 위해 맨 마지막으로 보낸다
-        sortMenu(menuSort);
+            MenuSort menuSort = new MenuSort(optionalAdminMenuEntity.get().getParentMenuId(), optionalAdminMenuEntity.get().getMenuSeq(), lastSortNum, optionalAdminMenuEntity.get().getSortNum());
+            // 삭제 전 sortNum을 맞춰주기 위해 맨 마지막으로 보낸다
+            sortMenu(menuSort);
 
-        FileEntity onFile = menuEntity.getOnImageFile();
-        if (!ObjectUtils.isEmpty(onFile)) {
-            onFile.updateDeleteYn('N');
-        }
-        FileEntity offFile = menuEntity.getOffImageFile();
-        if (!ObjectUtils.isEmpty(offFile)) {
-            offFile.updateDeleteYn('N');
-        }
+            FileEntity onFile = optionalAdminMenuEntity.get().getOnImageFile();
+            if (!ObjectUtils.isEmpty(onFile)) {
+                onFile.updateDeleteYn('N');
+            }
+            FileEntity offFile = optionalAdminMenuEntity.get().getOffImageFile();
+            if (!ObjectUtils.isEmpty(offFile)) {
+                offFile.updateDeleteYn('N');
+            }
 
-        try {
-            adminMenuRepository.delete(menuEntity);
-            adminMenuRepository.flush();
-        } catch (RuntimeException e) {
-            throw new RuntimeException("권한에 등록되어있는 메뉴입니다.\n권한에서 제거 후 삭제해 주십시오.");
-        }
+            try {
+                adminMenuRepository.delete(optionalAdminMenuEntity.get());
+                adminMenuRepository.flush();
+            } catch (RuntimeException e) {
+                throw new RuntimeException("권한에 등록되어있는 메뉴입니다.\n권한에서 제거 후 삭제해 주십시오.");
+            }
 
-        if (!ObjectUtils.isEmpty(onFile)) {
-            fileRepository.delete(onFile);
-            File deleteFile = new File(onFile.getFilePath());
-            deleteFile.delete();
-        }
-        if (!ObjectUtils.isEmpty(offFile)) {
-            fileRepository.delete(offFile);
-            File deleteFile = new File(offFile.getFilePath());
-            deleteFile.delete();
+            if (!ObjectUtils.isEmpty(onFile)) {
+                fileRepository.delete(onFile);
+                File deleteFile = new File(onFile.getFilePath());
+                this.deleteFile(deleteFile);
+            }
+            if (!ObjectUtils.isEmpty(offFile)) {
+                fileRepository.delete(offFile);
+                File deleteFile = new File(offFile.getFilePath());
+                this.deleteFile(deleteFile);
+            }
+        } else {
+            throw new RuntimeException("메뉴 정보가 유효하지 않습니다. 다시 한번 확인 해 주세요.");
         }
     }
 
@@ -274,5 +286,13 @@ public class SettingMenuSub extends SettingMenuAbstract {
         }
 
         return menus;
+    }
+
+    private void deleteFile(File file) {
+        if (file.delete()) {
+            log.info("file delete success!!");
+        } else {
+            log.info("file delete fail!!");
+        }
     }
 }
