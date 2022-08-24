@@ -37,11 +37,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     List<String> skipPathList = new ArrayList<>();
     skipPathList.add("/auth/login");
     skipPathList.add("/auth/logout");
-    skipPathList.add("/auth/join");
     skipPathList.add("/auth/refresh");
-    skipPathList.add("/auth/search");
-    skipPathList.add("/auth/user/passwd");
-    skipPathList.add(("/setting/code/external/groups"));
+    skipPathList.add(("/setting/code/groups"));
 
 
     for (int i = 0; i < skipPathList.size(); i++) {
@@ -53,7 +50,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     return false;
   }
 
-  // @Description : 권한검사가 필요한 RequestURI 들옥
+  // @Description : 권한검사가 필요한 RequestURI 등록
   private boolean isRequiredValidation(String requestUri) {
     return requestUri.equals("/admin/setting/menus/tree");
   }
@@ -80,6 +77,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     if (jwtToken != null) {
       try {
         adminUserDto = jwtUtil.getUserDtoInToken(jwtToken);
+        // 추후 refreshToken으로 accessToken 재발급 시스템 개발 요함.
       } catch (ExpiredTokenException e) {
         throw new ExpiredTokenException();
       }

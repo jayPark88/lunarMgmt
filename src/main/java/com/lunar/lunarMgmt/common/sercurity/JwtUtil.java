@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.common.exception.ExpiredTokenException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -26,16 +25,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtUtil {
 
-  public final static long ACCESS_TOKEN_VALIDATION_SECOND = 1000 * 3600;
-  public final static long REFRESH_ACCESS_TOKEN_VALIDATION_SECOND = 1000 * 7200;
-
+  public final static long ACCESS_TOKEN_VALIDATION_SECOND = 1000 * 3600;// 1시간
+  public final static long REFRESH_ACCESS_TOKEN_VALIDATION_SECOND = 1000 * 7200; // 2시간
   final static public String AUTHRIZATION_HEADER_NAME = "Authorization";
-  final static public String AUTHRIZATION_REQUIRED_HEADER_NAME = "AuthorizationRequired";
   final static public String REFERER_HEADER_NAME = "Referer";
   final static public String USER_DATA_NAME = "userDetails";
-
-  final static public String ACCESS_TOKEN_NAME = "access_token";
-  final static public String REFRESH_TOKEN_NAME = "refresh_token";
 
   @Value("${spring.jwt.secret}")
   private String SECRET_KEY;
@@ -47,6 +41,7 @@ public class JwtUtil {
     return Keys.hmacShaKeyFor(secretKey.getBytes());
   }
 
+  // JWT Token decoding
   public Claims extractAllClaims(String token) throws ExpiredTokenException {
     try {
       return Jwts.parserBuilder()
@@ -88,21 +83,23 @@ public class JwtUtil {
   }
 
   public String doGenerateToken(AdminUserDto adminUserDto, long expireTime) throws JsonProcessingException {
-    long currentTime = System.currentTimeMillis();
+    long currentTime = System.currentTimeMillis();// 현재 시간
     Date issuedAt = new Date(currentTime);
     Date expireDate = new Date(currentTime + expireTime);
 
+    // jwt의 payload부분에는 토큰에 담을 정보가 들어있다. 여기에 담는 정보의 한 '조각'을 클레임이라고 부르고 이는 name/value의
+    // 한쌍으로 이뤄져있다. 토큰에는 여러개의 클레임을 넣을 수 있다.
     Claims claims = Jwts.claims();
-    claims.put("userId", adminUserDto.getAdminUserId());
-    claims.put("authSeq", adminUserDto.getAuthSeq());
-    claims.put(USER_DATA_NAME, mapper.writeValueAsString(adminUserDto));
+    claims.put("userId", adminUserDto.getAdminUserId());// 첫번째 claim
+    claims.put("authSeq", adminUserDto.getAuthSeq());// 두번째 claim
+    claims.put(USER_DATA_NAME, mapper.writeValueAsString(adminUserDto));// 세번째 claim
 
-    return Jwts.builder()
-            .setClaims(claims)
-            .setIssuedAt(issuedAt)
-            .setExpiration(expireDate)
-            .signWith(getSigningKey(SECRET_KEY), SignatureAlgorithm.HS256)
-            .compact();
+    return Jwts.builder()// header가 없음
+            .setClaims(claims)// Claims 설정(payLoad)
+            .setIssuedAt(issuedAt)// 생성일 설정(payLoad)
+            .setExpiration(expireDate)// 만료일 설정(payLoad)
+            .signWith(getSigningKey(SECRET_KEY), SignatureAlgorithm.HS256)// HS256과 key로 Sign(signature)
+            .compact();// 토큰 생성
   }
 
   public DecodedJWT tokenToJwt(String token) {
