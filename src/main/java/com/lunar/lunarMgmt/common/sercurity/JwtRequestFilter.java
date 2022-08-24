@@ -38,6 +38,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     skipPathList.add("/auth/login");
     skipPathList.add("/auth/logout");
     skipPathList.add("/auth/refresh");
+    skipPathList.add("/swagger-");
+    skipPathList.add("/v3");
     skipPathList.add(("/setting/code/groups"));
 
 
@@ -61,41 +63,40 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     if (isSkipped(request.getRequestURI())) {
       filterChain.doFilter(request, response);
-      return;
-    }
-
-    String jwtToken = request.getHeader(JwtUtil.AUTHRIZATION_HEADER_NAME);
-    if (jwtToken == null) {
-      Cookie cookie = cookieUtil.getCookie(request, "auth._token.local");
-      if (cookie != null)
-        jwtToken = cookie.getValue();
-    }
-
-    AdminUserDto adminUserDto = new AdminUserDto();
-
-    // accessToken 검증
-    if (jwtToken != null) {
-      try {
-        adminUserDto = jwtUtil.getUserDtoInToken(jwtToken);
-        // 추후 refreshToken으로 accessToken 재발급 시스템 개발 요함.
-      } catch (ExpiredTokenException e) {
-        throw new ExpiredTokenException();
+    }else{
+      String jwtToken = request.getHeader(JwtUtil.AUTHRIZATION_HEADER_NAME);
+      if (jwtToken == null) {
+        Cookie cookie = cookieUtil.getCookie(request, "auth._token.local");
+        if (cookie != null)
+          jwtToken = cookie.getValue();
       }
-      setUsernameAuthentication(adminUserDto, request);
-    } else
-      throw new NotFoundTokenException();
 
-    // 권한 검증이 필요한 API라면 검사
-    String referer = request.getHeader(JwtUtil.REFERER_HEADER_NAME);
+      AdminUserDto adminUserDto = new AdminUserDto();
 
-    if (ObjectUtils.isEmpty(adminUserDto.getAuthSeq()))
-      throw new ForbiddenTokenException();
+      // accessToken 검증
+      if (jwtToken != null) {
+        try {
+          adminUserDto = jwtUtil.getUserDtoInToken(jwtToken);
+          // 추후 refreshToken으로 accessToken 재발급 시스템 개발 요함.
+        } catch (ExpiredTokenException e) {
+          throw new ExpiredTokenException();
+        }
+        setUsernameAuthentication(adminUserDto, request);
+      } else
+        throw new NotFoundTokenException();
 
-    if (isRequiredValidation(request.getRequestURI())
-            && !validAuthoritiesWithReferer(referer, adminUserDto.getAuthSeq()))
-      throw new ForbiddenTokenException();
+      // 권한 검증이 필요한 API라면 검사
+      String referer = request.getHeader(JwtUtil.REFERER_HEADER_NAME);
 
-    filterChain.doFilter(request, response);
+      if (ObjectUtils.isEmpty(adminUserDto.getAuthSeq()))
+        throw new ForbiddenTokenException();
+
+      if (isRequiredValidation(request.getRequestURI())
+              && !validAuthoritiesWithReferer(referer, adminUserDto.getAuthSeq()))
+        throw new ForbiddenTokenException();
+
+      filterChain.doFilter(request, response);
+    }
   }
 
   // @Description : 권한검사할 경우 요청한 Referer가 본인 권한에 등록되어 있는 메뉴인지 검사

@@ -56,6 +56,10 @@ dependencies {
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
     implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
 
+    // swagger
+    implementation "io.springfox:springfox-boot-starter:3.0.0"
+    implementation "io.springfox:springfox-swagger-ui:3.0.0"
+
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation("org.junit.platform:junit-platform-launcher:1.5.2")
