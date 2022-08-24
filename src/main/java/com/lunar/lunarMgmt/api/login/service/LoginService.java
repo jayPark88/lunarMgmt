@@ -2,6 +2,7 @@ package com.lunar.lunarMgmt.api.login.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
+import com.lunar.lunarMgmt.api.login.model.LoginAdminUserDto;
 import com.lunar.lunarMgmt.api.login.model.Tokens;
 import com.lunar.lunarMgmt.common.exception.ExpiredTokenException;
 import com.lunar.lunarMgmt.common.exception.NotFoundUserException;
@@ -21,7 +22,7 @@ public class LoginService {
   private final AdminUserRepository adminUserRepo;
   private final PasswordEncoder passwordEncoder;
   private final JwtUtil jwtUtil;
-  public Tokens login(AdminUserDto adminUser) throws NotFoundUserException, JsonProcessingException {
+  public Tokens login(LoginAdminUserDto adminUser) throws NotFoundUserException, JsonProcessingException {
     Optional<AdminUserEntity> adminUserEntity = adminUserRepo.findByAdminUserId(adminUser.getAdminUserId());
 
     if (adminUserEntity.isEmpty()) {

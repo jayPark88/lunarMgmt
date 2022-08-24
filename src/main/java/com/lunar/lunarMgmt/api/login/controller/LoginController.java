@@ -1,7 +1,7 @@
 package com.lunar.lunarMgmt.api.login.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
+import com.lunar.lunarMgmt.api.login.model.LoginAdminUserDto;
 import com.lunar.lunarMgmt.api.login.model.Tokens;
 import com.lunar.lunarMgmt.api.login.service.LoginService;
 import com.lunar.lunarMgmt.common.exception.ExpiredTokenException;
@@ -20,7 +20,7 @@ public class LoginController {
   private final LoginService loginService;
 
   @PostMapping("/login")
-  public Tokens login(@RequestBody AdminUserDto user ) throws NotFoundUserException, JsonProcessingException {
+  public Tokens login(@RequestBody LoginAdminUserDto user ) throws NotFoundUserException, JsonProcessingException {
     return loginService.login(user);
   }
 
