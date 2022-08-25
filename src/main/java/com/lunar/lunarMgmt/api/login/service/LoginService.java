@@ -4,12 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.api.login.model.LoginAdminUserDto;
 import com.lunar.lunarMgmt.api.login.model.Tokens;
+import com.lunar.lunarMgmt.common.config.RedisRepositoryConfig;
 import com.lunar.lunarMgmt.common.exception.ExpiredTokenException;
 import com.lunar.lunarMgmt.common.exception.NotFoundUserException;
 import com.lunar.lunarMgmt.common.jpa.entities.AdminUserEntity;
 import com.lunar.lunarMgmt.common.jpa.repository.AdminUserRepository;
 import com.lunar.lunarMgmt.common.sercurity.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,7 @@ public class LoginService {
   private final AdminUserRepository adminUserRepo;
   private final PasswordEncoder passwordEncoder;
   private final JwtUtil jwtUtil;
+  private final RedisRepositoryConfig redisRepositoryConfig;
   public Tokens login(LoginAdminUserDto adminUser) throws NotFoundUserException, JsonProcessingException {
     Optional<AdminUserEntity> adminUserEntity = adminUserRepo.findByAdminUserId(adminUser.getAdminUserId());
 
@@ -46,22 +49,14 @@ public class LoginService {
       // 패스워드 체크 후 비밀번호 null
       final String accessToken = jwtUtil.generateToken(adminUserDto);
       final String refreshToken = jwtUtil.generateRefreshToken(adminUserDto);
+      ValueOperations<String, Object> valueOperations = redisRepositoryConfig.redisTemplate().opsForValue();
+      valueOperations.set(accessToken, refreshToken);
 
       return new Tokens(accessToken, refreshToken);
     }
   }
 
-  public Tokens refreshToken(String refreshToken) throws ExpiredTokenException, JsonProcessingException {
-    String newRefreshToken;
-
-    if (Optional.ofNullable(refreshToken).isPresent()) {
-      AdminUserDto adminUserDto = jwtUtil.getUserDtoInToken(refreshToken);
-      newRefreshToken = jwtUtil.generateRefreshToken(adminUserDto);
-    }else{
-      throw new ExpiredTokenException();
-    }
-    // 기존에 refreshToken을 accessToken으로, newRefreshToken을 refreshToken으로 변경
-    return new Tokens(refreshToken, newRefreshToken);
+  public Tokens refreshToken(String accessToken) throws ExpiredTokenException, JsonProcessingException {
+    return jwtUtil.refreshToken(accessToken);
   }
-
 }

@@ -12,10 +12,13 @@ server:
 ###################################################################################################
 ---
 spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   profiles: local
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://172.26.64.133:3306/lunar_db?serverTimezone=UTC&characterEncoding=UTF-8&passwordCharacterEncoding=UTF-8
+    url: jdbc:mysql://172.26.69.193:3306/lunar_db?serverTimezone=UTC&characterEncoding=UTF-8&passwordCharacterEncoding=UTF-8
     username: root
     password: lois@1234
     hikari:
@@ -44,10 +47,10 @@ spring:
   ## logging
   logging:
     file:
-      path: C:\svc\wiseai-admin-logs
+      path: C:\svc\lunar-admin-logs
     level:
       root: info
-      kr.co.wiseai.admin: debug
+      com.lunar.lunarMgmt.admin: debug
       org.springframework.web: trace
       sql: error
       jdbc: off
@@ -57,4 +60,9 @@ spring:
 
 menu-file:
   upload-path: C:\lunar\menu\
+
+system:
+  swagger:
+    host: localhost:8080 #swagger-ui.html -> nuxt front server에 요청하도록 (because of token) 추후 3000으로 변경될 예정
+    protocols: http, https
 ---

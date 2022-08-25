@@ -6,9 +6,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
+import com.lunar.lunarMgmt.api.login.model.Tokens;
+import com.lunar.lunarMgmt.common.config.RedisRepositoryConfig;
 import com.lunar.lunarMgmt.common.exception.ExpiredTokenException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
@@ -20,6 +23,7 @@ import java.security.Key;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -30,6 +34,7 @@ public class JwtUtil {
   final static public String AUTHRIZATION_HEADER_NAME = "Authorization";
   final static public String REFERER_HEADER_NAME = "Referer";
   final static public String USER_DATA_NAME = "userDetails";
+  private RedisRepositoryConfig redisRepositoryConfig;
 
   @Value("${spring.jwt.secret}")
   private String SECRET_KEY;
@@ -104,6 +109,24 @@ public class JwtUtil {
 
   public DecodedJWT tokenToJwt(String token) {
     return JWT.decode(token);
+  }
+
+
+  public Tokens refreshToken(String accessToken) throws ExpiredTokenException, JsonProcessingException {
+
+    ValueOperations<String, Object> valueOperations = redisRepositoryConfig.redisTemplate().opsForValue();
+    String refreshToken = String.valueOf(valueOperations.get(accessToken));
+
+    String newRefreshToken;
+
+    if (Optional.ofNullable(refreshToken).isPresent()) {
+      AdminUserDto adminUserDto = this.getUserDtoInToken(refreshToken);
+      newRefreshToken = this.generateRefreshToken(adminUserDto);
+    }else{
+      throw new ExpiredTokenException();
+    }
+    // 기존에 refreshToken을 accessToken으로, newRefreshToken을 refreshToken으로 변경
+    return new Tokens(refreshToken, newRefreshToken);
   }
 
 }
