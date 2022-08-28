@@ -28,6 +28,9 @@ public class AdminUserDto extends AdminBaseDto implements ChangableToFromEntity<
   private Character deleteYn;
   private Character useYn;
 
+  // front 용
+  private String firstMenuUri;
+
   public AdminUserDto(AdminUserEntity entity) {
     super();
     from(entity);

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.lunar.lunarMgmt.api.login.model.AdminUserDto;
 import com.lunar.lunarMgmt.api.login.model.LoginAdminUserDto;
 import com.lunar.lunarMgmt.api.login.model.Tokens;
+import com.lunar.lunarMgmt.api.setting.abst.SettingMenuAbstract;
+import com.lunar.lunarMgmt.api.setting.model.AdminMenuDto;
 import com.lunar.lunarMgmt.common.config.RedisRepositoryConfig;
 import com.lunar.lunarMgmt.common.exception.ExpiredTokenException;
 import com.lunar.lunarMgmt.common.exception.NotFoundUserException;
@@ -15,6 +17,7 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,6 +28,7 @@ public class LoginService {
   private final PasswordEncoder passwordEncoder;
   private final JwtUtil jwtUtil;
   private final RedisRepositoryConfig redisRepositoryConfig;
+  private final SettingMenuAbstract settingMenuAbstracts;
   public Tokens login(LoginAdminUserDto adminUser) throws NotFoundUserException, JsonProcessingException {
     Optional<AdminUserEntity> adminUserEntity = adminUserRepo.findByAdminUserId(adminUser.getAdminUserId());
 
@@ -59,4 +63,21 @@ public class LoginService {
   public Tokens refreshToken(String accessToken) throws ExpiredTokenException, JsonProcessingException {
     return jwtUtil.refreshToken(accessToken);
   }
+
+  public AdminUserDto tokenUserInfo(AdminUserDto adminUserDto) {
+    List<AdminMenuDto> menuTree = settingMenuAbstracts.selectMenuTree(adminUserDto);
+    AdminMenuDto lastMenu = getLastMenu(menuTree.get(0));
+    adminUserDto.setFirstMenuUri(lastMenu.getPageUrl());
+    return adminUserDto;
+  }
+
+  // 재귀로 가장 첫번째 마지막 메뉴를 찾는다.
+  AdminMenuDto getLastMenu(AdminMenuDto menu) {
+    if (menu.getChildren() == null || menu.getChildren().size() <= 0)
+      return menu;
+
+    AdminMenuDto childMenu = menu.getChildren().get(0);
+    return getLastMenu(childMenu);
+  }
+
 }
