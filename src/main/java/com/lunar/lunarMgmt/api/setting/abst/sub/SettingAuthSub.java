@@ -31,7 +31,9 @@ public class SettingAuthSub extends SettingAuthAbstract {
 
     @Override
     public List<AuthDto> selectAuthList(String authNm) {
-        return adminAuthRepository.findAll().stream().parallel().filter(item -> item.getAuthNm().contains(authNm))
+        return adminAuthRepository.findAll().stream().parallel()
+                .filter(item -> item.getAuthNm().contains(authNm))
+                .filter(item -> item.getUseYn().equals('Y'))
                 .map(AuthDto::new).collect(Collectors.toList());
     }
     @Override

@@ -39,7 +39,7 @@ class AdminAuthTest {
     @Test
     public void searchContainAuthNameTest(){
         // given
-        String authNm = "시스";
+        String authNm = "";
 
         // when
         List<AuthDto> authDtos = settingAuthSub.selectAuthList(authNm);

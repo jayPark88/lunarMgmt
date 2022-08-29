@@ -40,6 +40,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     skipPathList.add("/auth/refresh");
     skipPathList.add("/swagger-");
     skipPathList.add("/v3");
+    skipPathList.add("/setting/auth/list");
     skipPathList.add(("/setting/code/groups"));
 
 
