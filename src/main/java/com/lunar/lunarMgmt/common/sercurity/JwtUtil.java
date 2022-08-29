@@ -114,19 +114,19 @@ public class JwtUtil {
 
   public Tokens refreshToken(String accessToken) throws ExpiredTokenException, JsonProcessingException {
 
-    ValueOperations<String, Object> valueOperations = redisRepositoryConfig.redisTemplate().opsForValue();
-    String refreshToken = String.valueOf(valueOperations.get(accessToken));
+//    ValueOperations<String, Object> valueOperations = redisRepositoryConfig.redisTemplate().opsForValue();
+//    String refreshToken = String.valueOf(valueOperations.get(accessToken));
 
     String newRefreshToken;
 
-    if (Optional.ofNullable(refreshToken).isPresent()) {
-      AdminUserDto adminUserDto = this.getUserDtoInToken(refreshToken);
+    if (Optional.ofNullable(accessToken).isPresent()) {
+      AdminUserDto adminUserDto = this.getUserDtoInToken(accessToken);
       newRefreshToken = this.generateRefreshToken(adminUserDto);
     }else{
       throw new ExpiredTokenException();
     }
     // 기존에 refreshToken을 accessToken으로, newRefreshToken을 refreshToken으로 변경
-    return new Tokens(refreshToken, newRefreshToken);
+    return new Tokens(accessToken, newRefreshToken);
   }
 
 }
