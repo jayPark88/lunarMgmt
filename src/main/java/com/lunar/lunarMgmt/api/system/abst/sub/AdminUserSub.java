@@ -24,22 +24,28 @@ public class AdminUserSub extends AdminUserAbstract {
 
   @Override
   public void saveAdminUser(AdminUserDto adminUserDto) {
-    if(this.checkAdminUserExist(adminUserDto)){
+    if(this.checkAdminUserExist(adminUserDto)){// 해당 유저가 존재한다면
       Optional<AdminUserEntity>optionalAdminUserEntity = adminUserRepository.findById(adminUserDto.getAdminUserSeq());
       if(optionalAdminUserEntity.isPresent()){
-        // adminUserDto의 adminUserPwd의 값이 존재한다면(신규등록 절차에서만 해당 필드에 값이 set되서 data가 전송된다.)
-        if (StringUtils.hasLength(adminUserDto.getAdminUserPwd())) {
-          adminUserDto.setAdminUserPwd(passwordEncoder.encode(adminUserDto.getAdminUserPwd()));
-        } else {
-          // 그게 아니면 AdminUserDto의 adminUserPwd의 값을 adminUserEntity에서 조회 한 값을 set 해준다.
-          adminUserDto.setAdminUserPwd(optionalAdminUserEntity.get().getAdminUserPwd());
-        }
-
+        adminUserDto.setAdminUserPwd(this.setAdminPwd(adminUserDto, optionalAdminUserEntity.get().getAdminUserPwd()));
         // 해당 setting된 값을 save해준다.
         adminUserRepository.save(adminUserDto.to());
       }else{
         throw new RuntimeException("HQ-ADMIN User 정보가 유효하지 않습니다.");
       }
+    }else{
+      adminUserDto.setAdminUserPwd(this.setAdminPwd(adminUserDto,""));
+      adminUserRepository.save(adminUserDto.to());
+    }
+  }
+
+  private String setAdminPwd(AdminUserDto adminUserDto, String asisAdminUserPwd){
+    // adminUserDto의 adminUserPwd의 값이 존재한다면(신규등록 절차에서만 해당 필드에 값이 set되서 data가 전송된다.)
+    if (StringUtils.hasLength(adminUserDto.getAdminUserPwd())) {
+      return passwordEncoder.encode(adminUserDto.getAdminUserPwd());
+    } else {
+      // 그게 아니면 AdminUserDto의 adminUserPwd의 값을 adminUserEntity에서 조회 한 값을 set 해준다.
+      return asisAdminUserPwd;
     }
   }
 

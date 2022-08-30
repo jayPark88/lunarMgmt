@@ -41,6 +41,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     skipPathList.add("/swagger-");
     skipPathList.add("/v3");
     skipPathList.add("/setting/auth/list");
+    skipPathList.add("/system/save/user");
     skipPathList.add(("/setting/code/groups"));
 
 
