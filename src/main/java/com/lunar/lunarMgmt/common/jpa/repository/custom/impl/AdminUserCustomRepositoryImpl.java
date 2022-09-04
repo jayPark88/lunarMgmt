@@ -44,6 +44,7 @@ public class AdminUserCustomRepositoryImpl implements AdminUserCustomRepository 
                         , adminUserEntity.position
                         , adminUserEntity.auth.authNm
                         , adminUserEntity.deleteYn
+                        , adminUserEntity.createDatetime
                 ))
                 .from(adminUserEntity)
                 .where(setCondition(searchDto))
@@ -58,6 +59,13 @@ public class AdminUserCustomRepositoryImpl implements AdminUserCustomRepository 
     private BooleanBuilder setCondition(AdminUserListSearchDto searchDto) {
         BooleanBuilder booleanBuilder = new BooleanBuilder();
 
+        if(StringUtils.hasText(searchDto.getSearchWord())){
+            if(!ObjectUtils.isEmpty(adminUserEntity.adminUserId.contains(searchDto.getSearchWord()))){
+                booleanBuilder.and(adminUserEntity.adminUserId.contains(searchDto.getSearchWord()));
+            }else{
+                booleanBuilder.and(adminUserEntity.adminUserNm.contains(searchDto.getSearchWord()));
+            }
+        }
         if (StringUtils.hasText(searchDto.getAdminUserId())) {
             booleanBuilder.and(adminUserEntity.adminUserId.contains(searchDto.getAdminUserId()));
         }

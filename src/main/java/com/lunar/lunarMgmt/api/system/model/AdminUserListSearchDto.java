@@ -8,5 +8,6 @@ public class AdminUserListSearchDto {
     private String adminUserNm;
     private String dept;
     private String position;
+    private String searchWord;
     private Character useYn;
 }
