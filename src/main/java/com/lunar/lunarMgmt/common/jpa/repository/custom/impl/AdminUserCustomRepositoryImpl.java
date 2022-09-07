@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.lunar.lunarMgmt.common.jpa.entities.QAdminUserEntity.adminUserEntity;
+import static com.lunar.lunarMgmt.common.jpa.entities.QAdminAuthEntity.adminAuthEntity;
 
 @RequiredArgsConstructor
 public class AdminUserCustomRepositoryImpl implements AdminUserCustomRepository {
@@ -38,15 +39,17 @@ public class AdminUserCustomRepositoryImpl implements AdminUserCustomRepository 
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
         QueryResults<AdminUserDto> pageList = queryFactory
                 .select(Projections.bean(AdminUserDto.class,
-                        adminUserEntity.adminUserId
+                        adminUserEntity.adminUserSeq
+                        , adminUserEntity.adminUserId
                         , adminUserEntity.adminUserNm
                         , adminUserEntity.dept
                         , adminUserEntity.position
-                        , adminUserEntity.auth.authNm
+                        , adminAuthEntity.authNm
                         , adminUserEntity.deleteYn
                         , adminUserEntity.createDatetime
                 ))
                 .from(adminUserEntity)
+                .leftJoin(adminAuthEntity).on(adminUserEntity.auth.authSeq.eq(adminAuthEntity.authSeq))
                 .where(setCondition(searchDto))
                 .offset(pageRequest.of().getOffset())
                 .limit(pageRequest.getSize())
