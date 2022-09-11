@@ -20,8 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = LunarMgmtApplication.class)
 public class AdminMenuTest {
-
-    @Autowired
+   @Autowired
     SettingMenuAbstract settingMenuAbstract;
     @Autowired
     SettingAuthAbstract settingAuthAbstract;
