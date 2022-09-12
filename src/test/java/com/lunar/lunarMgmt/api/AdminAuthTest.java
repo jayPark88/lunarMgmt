@@ -174,13 +174,14 @@ class AdminAuthTest {
     @DisplayName("HQ-ADMIN 권한 메뉴 등록")
     public void saveAuthMenu(){
         // given
+        Long authSeq = 0L;
         List<AdminAuthMenuDto>adminUserDtos =
                 adminAuthMenuRepository.findAllByAuthAuthSeqAndMenuUseYnOrderByMenuSortNumAsc(1L, 'Y').stream().map(AdminAuthMenuDto::new).collect(Collectors.toList());
         AdminUserDto adminUserDto = new AdminUserDto(settingAuthSub.selectAuthUserList(1L).stream().filter(item -> item.getAdminUserId().equals("jayParkSub")).findFirst().get().to());
 
         // when
         // 예상 시나리오는 adminUserDtos는 4번을 제외한 1~3번까지만 존재하고 as-is의 4번을 제외하고 3번까지만 데이터 수정되는 부분을 할 예정이다.
-        settingAuthSub.saveAuthMenu(adminUserDtos.stream().filter(item -> !item.getAuthMenuSeq().equals(4L)).collect(Collectors.toList()), adminUserDto);
+        settingAuthSub.saveAuthMenu(authSeq, adminUserDtos.stream().filter(item -> !item.getAuthMenuSeq().equals(4L)).collect(Collectors.toList()), adminUserDto);
 
         // then
         assertAll(

@@ -39,8 +39,8 @@ public class AuthService {
         return settingAuthSub.selectMenuAuthMenutree(authSeq);
     }
 
-    public void saveAuthMenu(List<AdminAuthMenuDto> authMenuDtos, AdminUserDto adminUserDto){
-        settingAuthSub.saveAuthMenu(authMenuDtos, adminUserDto);
+    public void saveAuthMenu(Long authSeq, List<AdminAuthMenuDto> authMenuDtos, AdminUserDto adminUserDto){
+        settingAuthSub.saveAuthMenu(authSeq, authMenuDtos, adminUserDto);
     }
 
     public void saveAuthUsers(Long authSeq, Long[] userSeqList){

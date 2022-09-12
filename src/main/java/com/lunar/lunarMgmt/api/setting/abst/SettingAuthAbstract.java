@@ -42,7 +42,7 @@ public abstract class SettingAuthAbstract {
     public abstract List<VueMenuDto> selectMenuAuthMenutree(Long authSeq);
 
     // 권한 메뉴 등록
-    public abstract void saveAuthMenu(List<AdminAuthMenuDto> authMenuDtos, AdminUserDto adminUserDto);
+    public abstract void saveAuthMenu(Long authSeq, List<AdminAuthMenuDto> authMenuDtos, AdminUserDto adminUserDto);
     // 권한에 속한 사용자 추가
     public abstract void saveAuthUsers(Long authSeq, Long[] userSeqs);
 

@@ -52,9 +52,9 @@ public class AuthController {
         return authService.selectMenuAuthMenutree(authSeq);
     }
 
-    @PostMapping("/menus")
-    public void saveAuthMenu(@RequestBody List<AdminAuthMenuDto> authMenuDtos, @AuthenticationPrincipal AdminUserDto adminUserDto){
-        authService.saveAuthMenu(authMenuDtos, adminUserDto);
+    @PostMapping("/menus/{authSeq}")
+    public void saveAuthMenu(@PathVariable Long authSeq, @RequestBody List<AdminAuthMenuDto> authMenuDtos, @AuthenticationPrincipal AdminUserDto adminUserDto){
+        authService.saveAuthMenu(authSeq, authMenuDtos, adminUserDto);
     }
 
     @PostMapping(value = "/users/{authSeq}")

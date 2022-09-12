@@ -80,9 +80,8 @@ public class SettingAuthSub extends SettingAuthAbstract {
     }
 
     @Override
-    public void saveAuthMenu(List<AdminAuthMenuDto> adminAuthMenuDtos, AdminUserDto adminUserDto) {
+    public void saveAuthMenu(Long authSeq, List<AdminAuthMenuDto> adminAuthMenuDtos, AdminUserDto adminUserDto) {
         List<AdminAuthMenuEntity> saveList = new ArrayList<>();
-        Long authSeq = adminAuthMenuDtos.get(0).getAuthSeq();
 
         // 전부 다 삭제 처리 하고 다시 추가를 한다.
         adminAuthMenuRepository.deleteByAuthAuthSeq(authSeq);
