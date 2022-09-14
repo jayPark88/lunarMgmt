@@ -46,22 +46,18 @@ public class AuthController {
     public List<AdminUserDto> selectAuthUserList(@PathVariable Long authSeq) {
         return authService.selectAuthUserList(authSeq);
     }
-
     @GetMapping("/menus/{authSeq}")
     public List<VueMenuDto> selectMenuAuthList(@PathVariable Long authSeq) {
         return authService.selectMenuAuthMenutree(authSeq);
     }
-
     @PostMapping("/menus/{authSeq}")
     public void saveAuthMenu(@PathVariable Long authSeq, @RequestBody List<AdminAuthMenuDto> authMenuDtos, @AuthenticationPrincipal AdminUserDto adminUserDto){
         authService.saveAuthMenu(authSeq, authMenuDtos, adminUserDto);
     }
-
     @PostMapping(value = "/users/{authSeq}")
     public void saveAuthUsers(@PathVariable Long authSeq, @RequestBody Long[] userSeqList) {
         authService.saveAuthUsers(authSeq, userSeqList);
     }
-
     @DeleteMapping(value = "/users/{authSeq}")
     public void deleteAuthUsers(@PathVariable Long authSeq, @RequestBody Long[] userSeqList) {
         authService.deleteAuthUsers(authSeq, userSeqList);
