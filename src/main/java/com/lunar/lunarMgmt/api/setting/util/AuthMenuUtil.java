@@ -24,6 +24,7 @@ public class AuthMenuUtil {
 
         // <MenuSeq, {ReadYn, WriteYn}> 을 사용하기위해 Map에 넣기
         Map<Long, AdminAuthMenuEntity> authMenuMap = new HashMap<>();
+
         // 해당 권한한에 속한 사용 중인 권한 리스트 사이즈 만큼 loop문을 돌려서 각 element를 AdminAuthMenuentity에 넣어서
         // key에는 menuSeq, value에는 adminAuthMenuEntity를 넣는다.
         for (AdminAuthMenuEntity adminAuthMenuEntity : authMenuList) {
