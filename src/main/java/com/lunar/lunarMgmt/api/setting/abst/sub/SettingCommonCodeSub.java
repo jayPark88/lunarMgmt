@@ -46,7 +46,7 @@ public class SettingCommonCodeSub extends SettingCommonCodeAbstract {
                 List<CommonCodeDto> commonCodeDtoList =
                         searchCommonCodeList(searchDto.toCommonCodeSearchDto(e.getGrpCd()), pageRequest);
 
-                return cgc.commonCodes(commonCodeDtoList);
+                return cgc.commonCodeDtos(commonCodeDtoList);
             }).collect(Collectors.toList());
     }
 

@@ -36,13 +36,16 @@ public class CommonGroupCode implements ChangableToFromEntity<CommonGroupCodeEnt
 
     // front에서 사용할 멤버
     public boolean focus = false;
+    public boolean getOpen() {
+        return this.commonCodeDtos.size() > 0 ? true : false;
+    }
 
     public CommonGroupCode(CommonGroupCodeEntity entity) {
         commonCodeDtos = new ArrayList<>();
         from(entity);
     }
 
-    public CommonGroupCode commonCodes(List<CommonCodeDto> commonCodeDtoList) {
+    public CommonGroupCode commonCodeDtos(List<CommonCodeDto> commonCodeDtoList) {
         this.commonCodeDtos = commonCodeDtoList;
         return this;
     }
