@@ -16,7 +16,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
-
     @GetMapping("/list")
     public List<AuthDto> selectAuthList(@ModelAttribute String authNm) {
         return authService.selectAuthList(authNm);
