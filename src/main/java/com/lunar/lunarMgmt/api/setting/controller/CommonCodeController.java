@@ -15,9 +15,7 @@ import java.util.List;
 @RequestMapping(value="/setting/code")
 @RequiredArgsConstructor
 public class CommonCodeController {
-
     private final CommonCodeService commonCodeService;
-
     @GetMapping(value="/groups")
     public List<CommonGroupCode> selectCommonGroupCodeList(@ModelAttribute CodeSearchDto searchDto, PageRequest pageRequest){
         return commonCodeService.selectCommonGrpCodeList(searchDto, pageRequest);
