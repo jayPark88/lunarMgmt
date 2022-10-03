@@ -24,4 +24,9 @@ public class AlgorhyTest {
        }
 
     }
+
+    @Test
+    public void test(){
+
+    }
 }
