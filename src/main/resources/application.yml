@@ -20,7 +20,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://172.19.63.117:3306/lunar_db?serverTimezone=UTC&characterEncoding=UTF-8&passwordCharacterEncoding=UTF-8
     username: root
-    password: lois@1234
+    password: root
     hikari:
       maximum-pool-size: 100
       minimumIdle: 25
