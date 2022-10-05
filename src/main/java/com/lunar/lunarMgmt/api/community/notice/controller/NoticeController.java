@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/notice")
 public class NoticeController {
+
     @PostMapping
     public void saveNoticeInfo(){
 
