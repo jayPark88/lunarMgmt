@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
-public enum NoticeTypeEnum implements CommonCodeEnum {
+public enum BoardTypeEnum implements CommonCodeEnum {
 
     ALL("all"),
     NOTICE("공지사항");

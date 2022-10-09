@@ -1,4 +1,4 @@
-package com.lunar.lunarMgmt.api.community.notice.model;
+package com.lunar.lunarMgmt.api.community.board.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -6,9 +6,9 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.lunar.lunarMgmt.common.intf.ChangableToFromEntity;
 import com.lunar.lunarMgmt.common.jpa.entities.FileEntity;
-import com.lunar.lunarMgmt.common.jpa.entities.NoticeEntity;
+import com.lunar.lunarMgmt.common.jpa.entities.BoardEntity;
 import com.lunar.lunarMgmt.common.model.FileDto;
-import com.lunar.lunarMgmt.common.model.enums.NoticeTypeEnum;
+import com.lunar.lunarMgmt.common.model.enums.BoardTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,10 +23,10 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class NoticeDto implements ChangableToFromEntity<NoticeEntity> {
+public class BoardDto implements ChangableToFromEntity<BoardEntity> {
 
-    private Long noticeSeq;
-    private NoticeTypeEnum noticeType;
+    private Long boardSeq;
+    private BoardTypeEnum boardType;
     private String title;
     private String content;
     private Character deleteYn;
@@ -52,7 +52,7 @@ public class NoticeDto implements ChangableToFromEntity<NoticeEntity> {
     private LocalDateTime modifyDatetime;
 
     @Override
-    public NoticeEntity to() {
+    public BoardEntity to() {
         List<FileEntity> fileEntities = new ArrayList<FileEntity>();
         if (!ObjectUtils.isEmpty(files)) {
             for(FileDto file : files) {
@@ -60,9 +60,9 @@ public class NoticeDto implements ChangableToFromEntity<NoticeEntity> {
             }
         }
 
-        return NoticeEntity.builder()
-                .noticeSeq(noticeSeq)
-                .noticeType(noticeType)
+        return BoardEntity.builder()
+                .boardSeq(boardSeq)
+                .boardType(boardType)
                 .title(title)
                 .content(content)
                 .deleteYn(deleteYn)
@@ -76,7 +76,7 @@ public class NoticeDto implements ChangableToFromEntity<NoticeEntity> {
     }
 
     @Override
-    public void from(NoticeEntity entity) {
+    public void from(BoardEntity entity) {
         List<FileDto> fileDtoList = new ArrayList<FileDto>();
         if (!ObjectUtils.isEmpty(entity.getFiles())) {
             for(int i = 0; i < entity.getFiles().size(); i ++) {
@@ -86,8 +86,8 @@ public class NoticeDto implements ChangableToFromEntity<NoticeEntity> {
             }
         }
 
-        this.noticeSeq = entity.getNoticeSeq();
-        this.noticeType = entity.getNoticeType();
+        this.boardSeq = entity.getBoardSeq();
+        this.boardType = entity.getBoardType();
         this.title = entity.getTitle();
         this.content = entity.getContent();
         this.deleteYn = entity.getDeleteYn();

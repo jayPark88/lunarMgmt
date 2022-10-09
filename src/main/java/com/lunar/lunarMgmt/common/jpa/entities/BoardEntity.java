@@ -1,6 +1,6 @@
 package com.lunar.lunarMgmt.common.jpa.entities;
 
-import com.lunar.lunarMgmt.common.model.enums.NoticeTypeEnum;
+import com.lunar.lunarMgmt.common.model.enums.BoardTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,18 +15,18 @@ import java.util.List;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name ="NOTICE")
-public class NoticeEntity extends AdminBaseEntity{
+@Table(name ="BOARD")
+public class BoardEntity extends AdminBaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "NOTICE_SEQ")
-    private Long noticeSeq;
+    @Column(name = "BOARD_SEQ")
+    private Long boardSeq;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "NOTICE_TYPE", columnDefinition = "varchar(30) not null comment '서비스 타입 코드'")
+    @Column(name = "BOARD_TYPE", columnDefinition = "varchar(30) not null comment '게시판 타입 코드'")
     @Setter
-    private NoticeTypeEnum noticeType;
+    private BoardTypeEnum boardType;
 
     @Column(name ="TITLE", columnDefinition = "varchar(100) not null comment '제목'")
     private String title;
@@ -39,8 +39,8 @@ public class NoticeEntity extends AdminBaseEntity{
     private Character deleteYn;
 
     @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    @JoinTable(name = "NOTICE_FILE",
-            joinColumns = @JoinColumn(name = "NOTICE_SEQ"),
+    @JoinTable(name = "BOARD_FILE",
+            joinColumns = @JoinColumn(name = "BOARD_SEQ"),
             inverseJoinColumns = @JoinColumn(name = "FILE_SEQ"))
     private List<FileEntity> files;
 
