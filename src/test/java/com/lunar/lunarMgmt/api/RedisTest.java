@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = LunarMgmtApplication.class)
 public class RedisTest {
+
     @Autowired
     private RedisRepositoryConfig redisRepositoryConfig;
 
