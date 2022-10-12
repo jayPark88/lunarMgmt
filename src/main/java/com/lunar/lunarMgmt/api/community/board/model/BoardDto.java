@@ -32,6 +32,9 @@ public class BoardDto implements ChangableToFromEntity<BoardEntity> {
     private Character deleteYn;
     private List<FileDto> files;
 
+    @JsonIgnore
+    private String createId;
+
     @JsonIgnore(value = true)
     private String createNm;
 
@@ -67,6 +70,7 @@ public class BoardDto implements ChangableToFromEntity<BoardEntity> {
                 .content(content)
                 .deleteYn(deleteYn)
                 .files(fileEntities)
+                .createId(createId)
                 .createNm(createNm)
                 .createDatetime(createDatetime)
                 .modifyId(modifyId)
@@ -92,10 +96,12 @@ public class BoardDto implements ChangableToFromEntity<BoardEntity> {
         this.content = entity.getContent();
         this.deleteYn = entity.getDeleteYn();
         this.files = fileDtoList;
+        this.createId = entity.getCreateId();
         this.createNm = entity.getCreateNm();
+        this.createDatetime = entity.getCreateDatetime();
         this.modifyNm = entity.getModifyNm();
         this.modifyId = entity.getModifyId();
         this.modifyDatetime = entity.getModifyDatetime();
-        this.createDatetime = entity.getCreateDatetime();
     }
 }
+
