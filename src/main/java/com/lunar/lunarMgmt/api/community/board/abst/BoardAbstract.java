@@ -12,5 +12,5 @@ public abstract class BoardAbstract {
     protected final BoardRepository boardRepository;
 
     // board 정보 save method
-    public abstract void boardInfoSave(BoardDto boardDto);
+    protected abstract void boardInfoSave(BoardDto boardDto);
 }
