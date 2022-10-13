@@ -24,7 +24,9 @@ public class AdminBaseEntityListener {
   void onUpdate(AdminBaseEntity entity) {
     AdminUserDto adminUserDto = AdminAuthenticationUtils.getAdminUserDto();
 
-    entity.setModifyId(adminUserDto.getAdminUserId());
-    entity.setModifyNm(adminUserDto.getAdminUserNm());
+    if(!ObjectUtils.isEmpty(adminUserDto.getAdminUserId())){
+      entity.setModifyId(adminUserDto.getAdminUserId());
+      entity.setModifyNm(adminUserDto.getAdminUserNm());
+    }
   }
 }
