@@ -9,7 +9,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @RestController
@@ -25,7 +24,6 @@ public class NoticeController {
                                @RequestPart(value="files", required = false)List<MultipartFile> files){
         ObjectMapper om = new ObjectMapper();
         BoardDto boardDto = om.readValue(new String(boardString.getBytes("8859_1"),"UTF-8"), BoardDto.class);
-
-        noticeService.saveNotice(boardDto);
+        noticeService.saveNotice(boardDto, files);
     }
 }
