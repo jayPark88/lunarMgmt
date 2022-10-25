@@ -61,6 +61,9 @@ spring:
 menu-file:
   upload-path: C:\lunar\menu\
 
+file:
+  upload-path: C:\lunar\file\
+
 system:
   swagger:
     host: localhost:8080 #swagger-ui.html -> nuxt front server에 요청하도록 (because of token) 추후 3000으로 변경될 예정
