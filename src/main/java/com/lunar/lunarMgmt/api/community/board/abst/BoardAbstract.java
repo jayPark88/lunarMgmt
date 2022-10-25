@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,12 +26,13 @@ public abstract class BoardAbstract {
     protected abstract void boardInfoSave(BoardDto boardDto);
 
     // fileDto생성 method
-    public List<FileDto> createFileDtoList(List<MultipartFile> files){
+    public List<FileDto> createFileDtoList(List<MultipartFile> files) throws IOException {
         List<FileDto> fileDtoList = new ArrayList<>();
         FileDto fileDto;
         if (!ObjectUtils.isEmpty(files)) {
             for (MultipartFile file : files) {
-                fileDto = fileUtil.createFileDto(file, fileConfig.getUploadPath());
+                fileUtil.uploadFile(file, fileConfig.getUploadPath()+file.getOriginalFilename());
+                fileDto = fileUtil.createFileDto(file, fileConfig.getUploadPath()+file.getOriginalFilename());
                 fileDtoList.add(fileDto);
             }
         }
