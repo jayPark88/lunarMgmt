@@ -154,7 +154,7 @@ public class AdminCommonCodeTest {
         // given
         CommonCodeSort commonCodeSort = new CommonCodeSort();
         commonCodeSort.setGroupCode("TEST_GRP");
-        commonCodeSort.setCode("TEST_CD_02");
+        commonCodeSort.setCode("TEST_CD_03");
         commonCodeSort.setBeforeSortNum(2);
         commonCodeSort.setSortNum(1);
 

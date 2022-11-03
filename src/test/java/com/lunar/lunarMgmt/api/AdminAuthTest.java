@@ -39,7 +39,7 @@ class AdminAuthTest {
     @Test
     public void searchContainAuthNameTest(){
         // given
-        String authNm = "";
+        String authNm = "시스템 관리자";
 
         // when
         List<AuthDto> authDtos = settingAuthSub.selectAuthList(authNm);
@@ -70,7 +70,7 @@ class AdminAuthTest {
     public void saveAuth(){
         // given
         AuthDto authDto = AuthDto.builder()
-                .authCd("AUTH_GENERAL1")
+                .authCd("AUTH_GENERAL2")
                 .authNm("일반 관리자")
                 .authDesc("일반 관리자")
                 .useYn('Y')
