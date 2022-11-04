@@ -27,10 +27,7 @@ public class Notice extends BoardAbstract {
     }
 
     @Override
-    protected PageResponse<BoardEntity, BoardDto> selectBoardList(BoardSearchDto boardSearchDto, PageRequest pageRequest) {
-        pageRequest.setSort("boardSeq");
-        pageRequest.setDirection("desc");
-
+    public PageResponse<BoardEntity, BoardDto> selectBoardList(BoardSearchDto boardSearchDto, PageRequest pageRequest) {
         Page<BoardDto> list = boardRepository.searchBoardList(boardSearchDto, pageRequest);
         return new PageResponse<BoardEntity, BoardDto>(list);
     }
