@@ -4,6 +4,7 @@ import com.lunar.lunarMgmt.api.community.board.model.BoardDto;
 import com.lunar.lunarMgmt.api.community.board.model.BoardSearchDto;
 import com.lunar.lunarMgmt.common.jpa.repository.custom.CustomBoardRepository;
 import com.lunar.lunarMgmt.common.model.PageRequest;
+import com.lunar.lunarMgmt.common.model.enums.BoardTypeEnum;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -53,7 +54,9 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
         BooleanBuilder booleanBuilder = new BooleanBuilder();
 
         if(!Objects.isNull(boardSearchDto.getBoardTypeEnum())){
-            booleanBuilder.and(boardEntity.boardType.eq(boardSearchDto.getBoardTypeEnum()));
+            if(!boardSearchDto.getBoardTypeEnum().equals(BoardTypeEnum.ALL)){
+                booleanBuilder.and(boardEntity.boardType.eq(boardSearchDto.getBoardTypeEnum()));
+            }
         }
 
         if(!Objects.isNull(boardSearchDto.getTitle())){
