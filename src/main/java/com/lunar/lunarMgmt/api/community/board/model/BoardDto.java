@@ -54,6 +54,10 @@ public class BoardDto implements ChangableToFromEntity<BoardEntity> {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime modifyDatetime;
 
+    public BoardDto(BoardEntity boardEntity) {
+        from(boardEntity);
+    }
+
     @Override
     public BoardEntity to() {
         List<FileEntity> fileEntities = new ArrayList<FileEntity>();
