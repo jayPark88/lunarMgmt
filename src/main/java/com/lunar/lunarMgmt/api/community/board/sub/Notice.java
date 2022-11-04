@@ -32,6 +32,6 @@ public class Notice extends BoardAbstract {
         pageRequest.setDirection("desc");
 
         Page<BoardDto> list = boardRepository.searchBoardList(boardSearchDto, pageRequest);
-        return null;
+        return new PageResponse<BoardEntity, BoardDto>(list);
     }
 }
